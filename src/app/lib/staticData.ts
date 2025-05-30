@@ -4,13 +4,13 @@ export const staticGames = [
     homeTeam: {
       name: "New York Yankees",
       abbreviation: "NYY",
-      logo: "/team-logos/nyy.svg",
+      logo: "/team-logos/nyy_logo.svg",
       record: "45-20"
     },
     awayTeam: {
       name: "Boston Red Sox",
       abbreviation: "BOS",
-      logo: "/team-logos/bos.svg",
+      logo: "/team-logos/bos_logo.svg",
       record: "38-27"
     },
     gameTime: "2025-05-28T19:05:00Z",
@@ -27,13 +27,13 @@ export const staticGames = [
     homeTeam: {
       name: "Los Angeles Dodgers",
       abbreviation: "LAD",
-      logo: "/team-logos/lad.svg",
+      logo: "/team-logos/lad_logo.svg",
       record: "42-23"
     },
     awayTeam: {
       name: "San Francisco Giants",
       abbreviation: "SF",
-      logo: "/team-logos/sf.svg",
+      logo: "/team-logos/sf_logo.svg",
       record: "36-29"
     },
     gameTime: "2025-05-28T22:10:00Z",
@@ -50,13 +50,13 @@ export const staticGames = [
     homeTeam: {
       name: "Chicago Cubs",
       abbreviation: "CHC",
-      logo: "/team-logos/chc.svg",
+      logo: "/team-logos/chc_logo.svg",
       record: "34-31"
     },
     awayTeam: {
       name: "St. Louis Cardinals",
       abbreviation: "STL",
-      logo: "/team-logos/stl.svg",
+      logo: "/team-logos/stl_logo.svg",
       record: "33-32"
     },
     gameTime: "2025-05-28T20:20:00Z",
