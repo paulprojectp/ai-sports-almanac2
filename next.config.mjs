@@ -4,8 +4,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: process.env.NODE_ENV === 'production' ? '/ai-sports-almanac' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/ai-sports-almanac/' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/ai-sports-almanac2' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/ai-sports-almanac2/' : '',
 }
-
 export default nextConfig;
