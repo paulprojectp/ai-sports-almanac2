@@ -2,70 +2,93 @@ export const staticGames = [
   {
     "id": "1",
     "homeTeam": {
-      "name": "New York Yankees",
-      "abbreviation": "NYY",
-      "logo": "/team-logos/nyy_logo.svg",
-      "record": "45-20"
+      "name": "Arizona Diamondbacks",
+      "abbreviation": "ARI",
+      "logo": "/team-logos/ari_logo.svg",
+      "record": "27-31"
     },
     "awayTeam": {
-      "name": "Boston Red Sox",
-      "abbreviation": "BOS",
-      "logo": "/team-logos/bos_logo.svg",
-      "record": "38-27"
+      "name": "Washington Nationals",
+      "abbreviation": "WSH",
+      "logo": "/team-logos/wsh_logo.svg",
+      "record": "28-30"
     },
-    "gameTime": "2025-06-01T19:05:00Z",
-    "venue": "Yankee Stadium, Bronx, NY",
+    "gameTime": "2025-06-01T08:10:00 PM",
+    "venue": "Arizona Diamondbacks Stadium",
     "predictions": {
-      "openai": "The Yankees have a strong home record and their starting pitcher has been dominant with a 2.35 ERA. The Red Sox have struggled on the road against left-handed pitching. Prediction: Yankees win 5-2.",
-      "anthropic": "This rivalry matchup favors the Yankees at home. Their offense has been clicking lately, averaging 5.8 runs in their last 10 games. The Red Sox bullpen has shown some weaknesses. The Yankees should pull away for a 6-3 victory.",
-      "grok": "Yankees have the edge with their home field advantage and superior pitching matchup. Their bullpen has been lights out in the late innings. The Red Sox struggle against power pitchers, which they'll face today. Yankees should win 4-2 in a well-pitched game.",
-      "deepseek": "Statistical analysis favors the Yankees by 62.3%. Their home record and pitching advantage are significant factors. The Red Sox have a .245 batting average against left-handed pitching this season. Projected score: Yankees 5, Red Sox 3."
+      "openai": "The ARI are playing at home against WSH. Based on recent performance and pitching matchups, ARI has a slight edge in this game.",
+      "anthropic": "This matchup between WSH and ARI should be competitive. ARI's home field advantage will be a factor.",
+      "grok": "ARI has been strong at home this season. WSH has struggled on the road. Expect ARI to win this one.",
+      "deepseek": "Statistical analysis gives ARI a 58% win probability in this matchup against WSH."
     }
   },
   {
     "id": "2",
     "homeTeam": {
-      "name": "Los Angeles Dodgers",
-      "abbreviation": "LAD",
-      "logo": "/team-logos/lad_logo.svg",
-      "record": "42-23"
+      "name": "Seattle Mariners",
+      "abbreviation": "SEA",
+      "logo": "/team-logos/sea_logo.svg",
+      "record": "31-26"
     },
     "awayTeam": {
-      "name": "San Francisco Giants",
-      "abbreviation": "SF",
-      "logo": "/team-logos/sf_logo.svg",
-      "record": "36-29"
+      "name": "Minnesota Twins",
+      "abbreviation": "MIN",
+      "logo": "/team-logos/min_logo.svg",
+      "record": "31-26"
     },
-    "gameTime": "2025-06-01T22:10:00Z",
-    "venue": "Dodger Stadium, Los Angeles, CA",
+    "gameTime": "2025-06-01T08:10:00 PM",
+    "venue": "Seattle Mariners Stadium",
     "predictions": {
-      "openai": "The Dodgers have dominated this rivalry recently, winning 7 of the last 10 meetings. Their offense leads the league in runs scored, and they have their ace on the mound today. The Giants have been playing better lately but still struggle against elite pitching. Prediction: Dodgers win 6-3.",
-      "anthropic": "Dodgers have the advantage with their home field and superior lineup. Their starting pitcher has a 2.45 ERA and has been particularly effective against the Giants. San Francisco's offense has been inconsistent on the road. Expect the Dodgers to win 5-2.",
-      "grok": "This NL West showdown favors the Dodgers. They've been hitting well at home with a .278 team average at Dodger Stadium. The Giants' starting pitcher has struggled in his last three outings. Dodgers should take this one 7-4 in a high-scoring affair.",
-      "deepseek": "Predictive models give the Dodgers a 68.7% win probability. Their offensive metrics at home are significantly better than the Giants' road performance. Weather conditions favor hitters today. Projected outcome: Dodgers 6, Giants 4."
+      "openai": "The SEA are playing at home against MIN. Based on recent performance and pitching matchups, SEA has a slight edge in this game.",
+      "anthropic": "This matchup between MIN and SEA should be competitive. SEA's home field advantage will be a factor.",
+      "grok": "SEA has been strong at home this season. MIN has struggled on the road. Expect SEA to win this one.",
+      "deepseek": "Statistical analysis gives SEA a 58% win probability in this matchup against MIN."
     }
   },
   {
     "id": "3",
     "homeTeam": {
-      "name": "Chicago Cubs",
-      "abbreviation": "CHC",
-      "logo": "/team-logos/chc_logo.svg",
-      "record": "34-31"
+      "name": "San Diego Padres",
+      "abbreviation": "SD",
+      "logo": "/team-logos/sd_logo.svg",
+      "record": "32-24"
     },
     "awayTeam": {
-      "name": "St. Louis Cardinals",
-      "abbreviation": "STL",
-      "logo": "/team-logos/stl_logo.svg",
-      "record": "33-32"
+      "name": "Pittsburgh Pirates",
+      "abbreviation": "PIT",
+      "logo": "/team-logos/pit_logo.svg",
+      "record": "22-37"
     },
-    "gameTime": "2025-06-01T20:20:00Z",
-    "venue": "Wrigley Field, Chicago, IL",
+    "gameTime": "2025-06-01T09:10:00 PM",
+    "venue": "San Diego Padres Stadium",
     "predictions": {
-      "openai": "This rivalry matchup is nearly even on paper. The Cubs have a slight edge playing at Wrigley Field where they've gone 20-14 this season. The Cardinals have struggled with consistency but have won 4 of their last 5 games. Weather conditions could be a factor with winds blowing out. Prediction: Cubs win a close one, 4-3.",
-      "anthropic": "The Cubs and Cardinals are evenly matched, but Chicago has the home field advantage. The Cubs' starter has been effective with a 3.28 ERA, while the Cardinals' pitcher has struggled on the road. Expect a typical tight Cubs-Cardinals game with Chicago prevailing 5-4.",
-      "grok": "This classic NL Central rivalry should be close. The Cubs have the better bullpen, which could be decisive in late innings. The Cardinals have been hitting better recently but struggle against left-handed pitching. Cubs should edge this one 6-5 in a back-and-forth game.",
-      "deepseek": "Statistical analysis shows a near-even matchup with the Cubs having a slight 54.2% win probability. Both teams have similar offensive and pitching metrics. The game could be affected by 15-20 mph winds at Wrigley. Projected score: Cubs 5, Cardinals 4 in a competitive game."
+      "openai": "The SD are playing at home against PIT. Based on recent performance and pitching matchups, SD has a slight edge in this game.",
+      "anthropic": "This matchup between PIT and SD should be competitive. SD's home field advantage will be a factor.",
+      "grok": "SD has been strong at home this season. PIT has struggled on the road. Expect SD to win this one.",
+      "deepseek": "Statistical analysis gives SD a 58% win probability in this matchup against PIT."
+    }
+  },
+  {
+    "id": "4",
+    "homeTeam": {
+      "name": "Los Angeles Dodgers",
+      "abbreviation": "LAD",
+      "logo": "/team-logos/lad_logo.svg",
+      "record": "36-22"
+    },
+    "awayTeam": {
+      "name": "New York Yankees",
+      "abbreviation": "NYY",
+      "logo": "/team-logos/nyy_logo.svg",
+      "record": "35-22"
+    },
+    "gameTime": "2025-06-01T11:10:00 PM",
+    "venue": "Los Angeles Dodgers Stadium",
+    "predictions": {
+      "openai": "The LAD are playing at home against NYY. Based on recent performance and pitching matchups, LAD has a slight edge in this game.",
+      "anthropic": "This matchup between NYY and LAD should be competitive. LAD's home field advantage will be a factor.",
+      "grok": "LAD has been strong at home this season. NYY has struggled on the road. Expect LAD to win this one.",
+      "deepseek": "Statistical analysis gives LAD a 58% win probability in this matchup against NYY."
     }
   }
 ];
