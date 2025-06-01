@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState } from 'react';
 import { Game } from '../lib/types';
 
@@ -24,6 +23,9 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
     timeZoneName: 'short'
   });
 
+  // Get the base path from environment or default to empty string
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+  
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
       <div className="p-4">
@@ -31,12 +33,12 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
           <div className="flex items-center">
             <div className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-full overflow-hidden">
               <img 
-                src={awayTeam.logo} 
+                src={`${basePath}${awayTeam.logo}`} 
                 alt={`${awayTeam.name} logo`}
                 className="w-12 h-12 object-contain"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = "/team-logos/default.svg";
+                  target.src = `${basePath}/team-logos/default.svg`;
                 }}
               />
             </div>
@@ -55,12 +57,12 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
             </div>
             <div className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-full overflow-hidden">
               <img 
-                src={homeTeam.logo} 
+                src={`${basePath}${homeTeam.logo}`} 
                 alt={`${homeTeam.name} logo`}
                 className="w-12 h-12 object-contain"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = "/team-logos/default.svg";
+                  target.src = `${basePath}/team-logos/default.svg`;
                 }}
               />
             </div>
