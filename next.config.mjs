@@ -4,7 +4,13 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: process.env.NODE_ENV === 'production' ? '/ai-sports-almanac2' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/ai-sports-almanac2/' : '',
+  // Fix the basePath to match the repository name
+  basePath: '/ai-sports-almanac2',
+  assetPrefix: '/ai-sports-almanac2/',
+  // Ensure the app directory is used as the root
+  distDir: 'out',
+  // Disable trailing slash to match GitHub Pages routing
+  trailingSlash: false,
 }
+
 export default nextConfig;
