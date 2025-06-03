@@ -45,8 +45,8 @@ jobs:
       
       - name: Commit and push changes
         run: |
-          # Explicitly exclude .env and debug files
-          git add -A -- ':!.env' ':!*_debug.html'
+          # Rely on .gitignore to exclude .env and debug files
+          git add -A
           git commit -m "Update predictions via GitHub Action" || echo "No changes to commit"
           git push
         env:
