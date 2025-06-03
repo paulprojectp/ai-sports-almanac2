@@ -12,13 +12,13 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
-const LLMPredictionService = require('./llm-integration/llm-prediction-service');
-const MongoDBService = require('./llm-integration/mongodb-service');
+const LLMPredictionService = require('./llm-prediction-service');
+const MongoDBService = require('./mongodb-service');
 require('dotenv').config();
 
 // Constants
 const DATA_SOURCE_URL = process.env.DATA_SOURCE_URL || 'https://www.dratings.com/predictor/mlb-baseball-predictions/';
-const STATIC_DATA_PATH = path.join(__dirname, '..', 'index.html');
+const STATIC_DATA_PATH = path.join(__dirname, '../../index.html');
 
 // Initialize services
 const llmService = new LLMPredictionService();
