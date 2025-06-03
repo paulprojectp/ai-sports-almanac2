@@ -32,7 +32,7 @@ Game Information:
 - Home Team: ${homeTeam.name} (${homeTeam.record})
 - Away Team: ${awayTeam.name} (${awayTeam.record})
 - Game Time: ${gameTime}
-- Venue: ${venue}
+- Venue: ${venue || `${homeTeam.name} Stadium`}
 
 Based on the teams' records and matchup, provide a prediction for this game.
 
@@ -50,6 +50,7 @@ Keep your explanation concise and focus only on this specific game.`;
    */
   async getOpenAIPrediction(game) {
     if (!this.apiKeys.openai) {
+      console.log('OpenAI API key not found, using fallback prediction');
       return this.getFallbackPrediction('openai', game);
     }
 
@@ -71,7 +72,8 @@ Keep your explanation concise and focus only on this specific game.`;
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${this.apiKeys.openai}`
-          }
+          },
+          timeout: 10000 // 10 second timeout
         }
       );
 
@@ -89,6 +91,7 @@ Keep your explanation concise and focus only on this specific game.`;
    */
   async getAnthropicPrediction(game) {
     if (!this.apiKeys.anthropic) {
+      console.log('Anthropic API key not found, using fallback prediction');
       return this.getFallbackPrediction('anthropic', game);
     }
 
@@ -109,7 +112,8 @@ Keep your explanation concise and focus only on this specific game.`;
             'Content-Type': 'application/json',
             'x-api-key': this.apiKeys.anthropic,
             'anthropic-version': '2023-06-01'
-          }
+          },
+          timeout: 10000 // 10 second timeout
         }
       );
 
@@ -127,6 +131,7 @@ Keep your explanation concise and focus only on this specific game.`;
    */
   async getGrokPrediction(game) {
     if (!this.apiKeys.grok) {
+      console.log('Grok API key not found, using fallback prediction');
       return this.getFallbackPrediction('grok', game);
     }
 
@@ -149,7 +154,8 @@ Keep your explanation concise and focus only on this specific game.`;
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${this.apiKeys.grok}`
-          }
+          },
+          timeout: 10000 // 10 second timeout
         }
       );
 
@@ -167,6 +173,7 @@ Keep your explanation concise and focus only on this specific game.`;
    */
   async getDeepSeekPrediction(game) {
     if (!this.apiKeys.deepseek) {
+      console.log('DeepSeek API key not found, using fallback prediction');
       return this.getFallbackPrediction('deepseek', game);
     }
 
@@ -188,7 +195,8 @@ Keep your explanation concise and focus only on this specific game.`;
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${this.apiKeys.deepseek}`
-          }
+          },
+          timeout: 10000 // 10 second timeout
         }
       );
 
@@ -209,6 +217,9 @@ Keep your explanation concise and focus only on this specific game.`;
     const { homeTeam, awayTeam } = game;
     const homeRecord = this.parseRecord(homeTeam.record);
     const awayRecord = this.parseRecord(awayTeam.record);
+    
+    // Get venue safely with fallback
+    const venue = game.venue || `${homeTeam.name} Stadium`;
     
     // Compare team records to generate a basic prediction
     const homeWinPct = homeRecord.wins / (homeRecord.wins + homeRecord.losses) || 0.5;
@@ -270,11 +281,45 @@ Keep your explanation concise and focus only on this specific game.`;
    * @returns {Object} - Object with wins and losses as numbers
    */
   parseRecord(record) {
-    const parts = record.split('-');
-    return {
-      wins: parseInt(parts[0]) || 0,
-      losses: parseInt(parts[1]) || 0
-    };
+    try {
+      const parts = record.split('-');
+      return {
+        wins: parseInt(parts[0]) || 0,
+        losses: parseInt(parts[1]) || 0
+      };
+    } catch (error) {
+      console.error('Error parsing record:', error.message);
+      return { wins: 0, losses: 0 };
+    }
+  }
+
+  /**
+   * Get a prediction for a specific game from a specific provider
+   * @param {String} provider - LLM provider name
+   * @param {Object} game - Game data object
+   * @returns {Promise<String>} - Prediction text
+   */
+  async getPrediction(provider, game) {
+    try {
+      console.log(`Getting ${provider} prediction for game ${game.id}: ${game.awayTeam.name} vs ${game.homeTeam.name}`);
+      
+      switch (provider.toLowerCase()) {
+        case 'openai':
+          return await this.getOpenAIPrediction(game);
+        case 'anthropic':
+          return await this.getAnthropicPrediction(game);
+        case 'grok':
+          return await this.getGrokPrediction(game);
+        case 'deepseek':
+          return await this.getDeepSeekPrediction(game);
+        default:
+          console.error(`Unknown provider: ${provider}`);
+          return this.getFallbackPrediction('default', game);
+      }
+    } catch (error) {
+      console.error(`Error getting ${provider} prediction:`, error.message);
+      return this.getFallbackPrediction(provider, game);
+    }
   }
 
   /**
@@ -286,10 +331,22 @@ Keep your explanation concise and focus only on this specific game.`;
     try {
       // Run all API calls in parallel for efficiency
       const [openai, anthropic, grok, deepseek] = await Promise.all([
-        this.getOpenAIPrediction(game),
-        this.getAnthropicPrediction(game),
-        this.getGrokPrediction(game),
-        this.getDeepSeekPrediction(game)
+        this.getOpenAIPrediction(game).catch(err => {
+          console.error('OpenAI prediction failed:', err.message);
+          return this.getFallbackPrediction('openai', game);
+        }),
+        this.getAnthropicPrediction(game).catch(err => {
+          console.error('Anthropic prediction failed:', err.message);
+          return this.getFallbackPrediction('anthropic', game);
+        }),
+        this.getGrokPrediction(game).catch(err => {
+          console.error('Grok prediction failed:', err.message);
+          return this.getFallbackPrediction('grok', game);
+        }),
+        this.getDeepSeekPrediction(game).catch(err => {
+          console.error('DeepSeek prediction failed:', err.message);
+          return this.getFallbackPrediction('deepseek', game);
+        })
       ]);
       
       return {
@@ -301,6 +358,7 @@ Keep your explanation concise and focus only on this specific game.`;
       };
     } catch (error) {
       console.error('Error getting predictions:', error);
+      // Even if all API calls fail, return fallback predictions to ensure the process continues
       return {
         openai: this.getFallbackPrediction('openai', game),
         anthropic: this.getFallbackPrediction('anthropic', game),

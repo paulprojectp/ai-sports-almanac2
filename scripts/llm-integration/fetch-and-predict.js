@@ -31,6 +31,14 @@ const mongoService = new MongoDBService();
 
 // Helper functions
 function parseTeamName(name) {
+  if (!name) {
+    console.warn('Warning: Empty team name provided to parseTeamName');
+    return {
+      fullName: 'Unknown Team',
+      abbreviation: 'UNK'
+    };
+  }
+
   // Map of team abbreviations
   const teamAbbreviations = {
     'Arizona': 'ARI',
@@ -116,29 +124,99 @@ function parseTeamName(name) {
 
 // Save HTML for debugging
 function saveHtmlForDebugging(html) {
-  const debugPath = path.join(__dirname, 'dratings_debug.html');
-  fs.writeFileSync(debugPath, html);
-  console.log(`Saved HTML for debugging to ${debugPath}`);
+  try {
+    const debugPath = path.join(__dirname, 'dratings_debug.html');
+    fs.writeFileSync(debugPath, html);
+    console.log(`Saved HTML for debugging to ${debugPath}`);
+  } catch (error) {
+    console.error('Error saving debug HTML:', error.message);
+  }
 }
 
 // Format date for display
 function formatDate(date) {
-  const options = { 
-    weekday: 'short', 
-    year: 'numeric', 
-    month: 'short', 
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZoneName: 'short'
-  };
-  return date.toLocaleDateString('en-US', options);
+  try {
+    const options = { 
+      weekday: 'short', 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    };
+    return date.toLocaleDateString('en-US', options);
+  } catch (error) {
+    console.error('Error formatting date:', error.message);
+    return new Date().toISOString();
+  }
 }
 
 // Get current date in YYYY-MM-DD format
 function getCurrentDate() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+}
+
+// Try to fetch MLB data from MLB Stats API as a fallback
+async function fetchMLBDataFromAPI() {
+  try {
+    console.log('Attempting to fetch MLB data from MLB Stats API...');
+    
+    // Get today's date in YYYY-MM-DD format
+    const today = getCurrentDate();
+    
+    // MLB Stats API endpoint for today's games
+    const apiUrl = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${today}&hydrate=team,linescore,game(content(summary,media(epg))),tickets,venue`;
+    
+    const response = await axios.get(apiUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      },
+      timeout: 10000
+    });
+    
+    const data = response.data;
+    
+    if (!data.dates || data.dates.length === 0 || !data.dates[0].games) {
+      console.log('No games found in MLB Stats API response');
+      return [];
+    }
+    
+    const apiGames = data.dates[0].games;
+    console.log(`Found ${apiGames.length} games from MLB Stats API`);
+    
+    // Transform API data to our format
+    const games = apiGames.map((apiGame, index) => {
+      const homeTeam = {
+        name: apiGame.teams.home.team.name,
+        abbreviation: apiGame.teams.home.team.abbreviation || parseTeamName(apiGame.teams.home.team.name).abbreviation,
+        logo: `/team-logos/${(apiGame.teams.home.team.abbreviation || parseTeamName(apiGame.teams.home.team.name).abbreviation).toLowerCase()}_logo.svg`,
+        record: apiGame.teams.home.leagueRecord ? `${apiGame.teams.home.leagueRecord.wins}-${apiGame.teams.home.leagueRecord.losses}` : '0-0'
+      };
+      
+      const awayTeam = {
+        name: apiGame.teams.away.team.name,
+        abbreviation: apiGame.teams.away.team.abbreviation || parseTeamName(apiGame.teams.away.team.name).abbreviation,
+        logo: `/team-logos/${(apiGame.teams.away.team.abbreviation || parseTeamName(apiGame.teams.away.team.name).abbreviation).toLowerCase()}_logo.svg`,
+        record: apiGame.teams.away.leagueRecord ? `${apiGame.teams.away.leagueRecord.wins}-${apiGame.teams.away.leagueRecord.losses}` : '0-0'
+      };
+      
+      return {
+        id: String(index + 1),
+        homeTeam,
+        awayTeam,
+        gameTime: apiGame.gameDate || `${today}T19:00:00Z`,
+        venue: apiGame.venue ? apiGame.venue.name : `${homeTeam.name} Stadium`,
+        scrapedDate: today
+      };
+    });
+    
+    return games;
+  } catch (error) {
+    console.error('Error fetching MLB data from API:', error.message);
+    return [];
+  }
 }
 
 // Main scraper function with multiple selector strategies
@@ -437,66 +515,15 @@ async function scrapeMLBData() {
       }
     }
     
-    // If no games found through any strategy, use API fallback
+    // If no games found through any strategy, try MLB API
     if (games.length === 0) {
-      console.log('No games found through scraping, trying MLB API fallback');
-      
-      try {
-        // Try to fetch from MLB Stats API
-        const mlbApiUrl = `https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1&date=${getCurrentDate()}`;
-        const mlbResponse = await axios.get(mlbApiUrl);
-        
-        if (mlbResponse.data && mlbResponse.data.dates && mlbResponse.data.dates.length > 0) {
-          const apiGames = mlbResponse.data.dates[0].games;
-          
-          apiGames.forEach((apiGame, index) => {
-            const awayTeam = {
-              name: apiGame.teams.away.team.name,
-              abbreviation: apiGame.teams.away.team.abbreviation || apiGame.teams.away.team.name.substring(0, 3).toUpperCase()
-            };
-            
-            const homeTeam = {
-              name: apiGame.teams.home.team.name,
-              abbreviation: apiGame.teams.home.team.abbreviation || apiGame.teams.home.team.name.substring(0, 3).toUpperCase()
-            };
-            
-            // Create game object
-            const game = {
-              id: String(index + 1),
-              homeTeam: {
-                name: homeTeam.name,
-                abbreviation: homeTeam.abbreviation,
-                logo: `/team-logos/${homeTeam.abbreviation.toLowerCase()}_logo.svg`,
-                record: apiGame.teams.home.leagueRecord ? 
-                  `${apiGame.teams.home.leagueRecord.wins}-${apiGame.teams.home.leagueRecord.losses}` : 
-                  '0-0'
-              },
-              awayTeam: {
-                name: awayTeam.name,
-                abbreviation: awayTeam.abbreviation,
-                logo: `/team-logos/${awayTeam.abbreviation.toLowerCase()}_logo.svg`,
-                record: apiGame.teams.away.leagueRecord ? 
-                  `${apiGame.teams.away.leagueRecord.wins}-${apiGame.teams.away.leagueRecord.losses}` : 
-                  '0-0'
-              },
-              gameTime: apiGame.gameDate,
-              venue: apiGame.venue ? apiGame.venue.name : `${homeTeam.name} Stadium`,
-              scrapedDate: getCurrentDate()
-            };
-            
-            games.push(game);
-          });
-          
-          console.log(`Found ${games.length} games from MLB API`);
-        }
-      } catch (apiError) {
-        console.error('Error fetching from MLB API:', apiError.message);
-      }
+      console.log('No games found through scraping, trying MLB API...');
+      games = await fetchMLBDataFromAPI();
     }
     
-    // If still no games found, use manual games as fallback
+    // If still no games, use fallback data with current date
     if (games.length === 0) {
-      console.log('No games found through any method, using manual games as fallback');
+      console.log('No games found through any method, using fallback data...');
       
       // Create some manual games with today's date
       const currentDate = getCurrentDate();
@@ -566,8 +593,56 @@ async function scrapeMLBData() {
   } catch (error) {
     console.error('Error scraping MLB data:', error.message);
     
-    // Return empty array on error
-    return [];
+    // Try MLB API as fallback
+    console.log('Trying MLB API as fallback...');
+    const apiGames = await fetchMLBDataFromAPI();
+    
+    if (apiGames.length > 0) {
+      return apiGames;
+    }
+    
+    // If all else fails, return fallback data
+    console.log('Using hardcoded fallback data...');
+    const currentDate = getCurrentDate();
+    
+    return [
+      {
+        id: '1',
+        homeTeam: {
+          name: 'New York Yankees',
+          abbreviation: 'NYY',
+          logo: '/team-logos/nyy_logo.svg',
+          record: '35-18'
+        },
+        awayTeam: {
+          name: 'Boston Red Sox',
+          abbreviation: 'BOS',
+          logo: '/team-logos/bos_logo.svg',
+          record: '30-23'
+        },
+        gameTime: `${currentDate}T19:05:00`,
+        venue: 'Yankee Stadium',
+        scrapedDate: currentDate
+      },
+      {
+        id: '2',
+        homeTeam: {
+          name: 'Los Angeles Dodgers',
+          abbreviation: 'LAD',
+          logo: '/team-logos/lad_logo.svg',
+          record: '38-15'
+        },
+        awayTeam: {
+          name: 'San Francisco Giants',
+          abbreviation: 'SF',
+          logo: '/team-logos/sf_logo.svg',
+          record: '28-25'
+        },
+        gameTime: `${currentDate}T22:10:00`,
+        venue: 'Dodger Stadium',
+        scrapedDate: currentDate
+      }
+    ];
   }
 }
 
@@ -681,7 +756,7 @@ async function main() {
     
     if (games.length === 0) {
       console.error('No games found, aborting');
-      return;
+      process.exit(1);
     }
     
     console.log(`Found ${games.length} games`);
@@ -694,30 +769,37 @@ async function main() {
       
       try {
         // Generate predictions from each LLM
-        const openaiPrediction = await llmService.getPrediction('openai', game);
-        const anthropicPrediction = await llmService.getPrediction('anthropic', game);
-        const grokPrediction = await llmService.getPrediction('grok', game);
-        const deepseekPrediction = await llmService.getPrediction('deepseek', game);
+        const gamePredictions = await Promise.allSettled([
+          llmService.getPrediction('openai', game),
+          llmService.getPrediction('anthropic', game),
+          llmService.getPrediction('grok', game),
+          llmService.getPrediction('deepseek', game)
+        ]);
         
         // Store predictions
         predictions[game.id] = {
-          openai: openaiPrediction,
-          anthropic: anthropicPrediction,
-          grok: grokPrediction,
-          deepseek: deepseekPrediction
+          openai: gamePredictions[0].status === 'fulfilled' ? gamePredictions[0].value : llmService.getFallbackPrediction('openai', game),
+          anthropic: gamePredictions[1].status === 'fulfilled' ? gamePredictions[1].value : llmService.getFallbackPrediction('anthropic', game),
+          grok: gamePredictions[2].status === 'fulfilled' ? gamePredictions[2].value : llmService.getFallbackPrediction('grok', game),
+          deepseek: gamePredictions[3].status === 'fulfilled' ? gamePredictions[3].value : llmService.getFallbackPrediction('deepseek', game)
         };
         
-        // Store in MongoDB
-        await mongoService.storePredictions(game.id, predictions[game.id]);
+        // Try to store in MongoDB, but continue if it fails
+        try {
+          await mongoService.storePredictions(game.id, predictions[game.id]);
+        } catch (mongoError) {
+          console.error(`MongoDB storage error for game ${game.id}:`, mongoError.message);
+          // Continue without MongoDB storage
+        }
       } catch (error) {
         console.error(`Error generating predictions for game ${game.id}:`, error.message);
         
         // Use fallback predictions
         predictions[game.id] = {
-          openai: `${game.homeTeam.name} 5 - ${game.awayTeam.name} 3. The ${game.homeTeam.name} have been strong at home this season and their starting pitcher has better stats. Expect a solid performance from their offense against the ${game.awayTeam.name}'s bullpen.`,
-          anthropic: `${game.homeTeam.name} 4 - ${game.awayTeam.name} 2. The ${game.homeTeam.name} have a statistical advantage in batting average and ERA. Their home field advantage will likely be the deciding factor in this matchup.`,
-          grok: `${game.awayTeam.name} 6 - ${game.homeTeam.name} 4. Despite playing away, the ${game.awayTeam.name} have been hitting well against left-handed pitching, which matches up well against the ${game.homeTeam.name}'s probable starter.`,
-          deepseek: `${game.homeTeam.name} 3 - ${game.awayTeam.name} 2. Expecting a close, low-scoring game with strong pitching performances from both teams. The ${game.homeTeam.name}'s slight edge in bullpen ERA should help them secure a narrow victory.`
+          openai: llmService.getFallbackPrediction('openai', game),
+          anthropic: llmService.getFallbackPrediction('anthropic', game),
+          grok: llmService.getFallbackPrediction('grok', game),
+          deepseek: llmService.getFallbackPrediction('deepseek', game)
         };
       }
     }
@@ -729,11 +811,16 @@ async function main() {
       console.log('Process completed successfully');
     } else {
       console.error('Failed to update static HTML file');
+      process.exit(1);
     }
   } catch (error) {
     console.error('Error in main process:', error.message);
+    process.exit(1);
   }
 }
 
 // Run the main function
-main();
+main().catch(error => {
+  console.error('Unhandled error in main process:', error);
+  process.exit(1);
+});
