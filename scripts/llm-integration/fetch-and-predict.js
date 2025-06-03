@@ -18,11 +18,11 @@ require('dotenv').config();
 
 // Constants
 const DATA_SOURCE_URL = process.env.DATA_SOURCE_URL || 'https://www.dratings.com/predictor/mlb-baseball-predictions/';
-// Use absolute path for GitHub Actions environment
 const STATIC_DATA_PATH = process.env.GITHUB_WORKSPACE ? 
   path.join(process.env.GITHUB_WORKSPACE, 'index.html') : 
   path.join(__dirname, '../../index.html');
 
+// Log the path being used
 console.log(`Using index.html path: ${STATIC_DATA_PATH}`);
 
 // Initialize services
@@ -401,6 +401,15 @@ async function updateHtmlWithPredictions(games) {
     // Create a new HTML content with updated predictions
     let updatedHtml = htmlContent;
     
+    // Add a timestamp to force update
+    const timestamp = new Date().toISOString();
+    const timestampPattern = /<!-- Last updated: .*? -->/;
+    if (timestampPattern.test(updatedHtml)) {
+      updatedHtml = updatedHtml.replace(timestampPattern, `<!-- Last updated: ${timestamp} -->`);
+    } else {
+      updatedHtml = updatedHtml.replace(/<head>/, `<head>\n  <!-- Last updated: ${timestamp} -->`);
+    }
+    
     // For each game, update the predictions in the HTML
     for (const game of games) {
       const { id, predictions } = game;
@@ -414,10 +423,10 @@ async function updateHtmlWithPredictions(games) {
         
         // Replace each prediction in the HTML
         updatedHtml = updatedHtml
-          .replace(openaiPattern, `$1${predictions.openai.replace(/\n/g, '<br>')}$2`)
-          .replace(anthropicPattern, `$1${predictions.anthropic.replace(/\n/g, '<br>')}$2`)
-          .replace(grokPattern, `$1${predictions.grok.replace(/\n/g, '<br>')}$2`)
-          .replace(deepseekPattern, `$1${predictions.deepseek.replace(/\n/g, '<br>')}$2`);
+          .replace(openaiPattern, `$1${predictions.openai ? predictions.openai.replace(/\n/g, '<br>') : "Prediction unavailable at this time."}$2`)
+          .replace(anthropicPattern, `$1${predictions.anthropic ? predictions.anthropic.replace(/\n/g, '<br>') : "Prediction unavailable at this time."}$2`)
+          .replace(grokPattern, `$1${predictions.grok ? predictions.grok.replace(/\n/g, '<br>') : "Prediction unavailable at this time."}$2`)
+          .replace(deepseekPattern, `$1${predictions.deepseek ? predictions.deepseek.replace(/\n/g, '<br>') : "Prediction unavailable at this time."}$2`);
       }
     }
     
@@ -442,9 +451,15 @@ async function main() {
     console.log(`Fetched ${games.length} games`);
     
     // Step 2: Connect to MongoDB
-    const mongoConnected = await mongoService.connect();
-    if (!mongoConnected) {
-      console.warn('Failed to connect to MongoDB, will continue without storing predictions');
+    let mongoConnected = false;
+    try {
+      mongoConnected = await mongoService.connect();
+      if (!mongoConnected) {
+        console.warn('Failed to connect to MongoDB, will continue without storing predictions');
+      }
+    } catch (error) {
+      console.warn('Error connecting to MongoDB:', error.message);
+      console.warn('Will continue without storing predictions');
     }
     
     // Step 3: Generate predictions for each game
@@ -452,18 +467,40 @@ async function main() {
       const game = games[i];
       console.log(`Generating predictions for game ${i+1}/${games.length}: ${game.awayTeam.name} @ ${game.homeTeam.name}`);
       
-      // Get predictions from all LLM providers
-      const predictions = await llmService.getAllPredictions(game);
-      game.predictions = predictions;
+      // Initialize predictions object with fallbacks
+      game.predictions = {
+        openai: "Prediction unavailable at this time.",
+        anthropic: "Prediction unavailable at this time.",
+        grok: "Prediction unavailable at this time.",
+        deepseek: "Prediction unavailable at this time."
+      };
       
-      // Store predictions in MongoDB if connected
-      if (mongoConnected) {
-        const result = await mongoService.storePredictions(game, predictions);
-        if (result.success) {
-          console.log(`Successfully stored predictions for game ${game.id} in MongoDB`);
-        } else {
-          console.warn(`Failed to store predictions for game ${game.id} in MongoDB: ${result.error}`);
+      try {
+        // Get predictions from all LLM providers
+        const predictions = await llmService.getAllPredictions(game);
+        
+        // Only update predictions that were successfully retrieved
+        if (predictions.openai) game.predictions.openai = predictions.openai;
+        if (predictions.anthropic) game.predictions.anthropic = predictions.anthropic;
+        if (predictions.grok) game.predictions.grok = predictions.grok;
+        if (predictions.deepseek) game.predictions.deepseek = predictions.deepseek;
+        
+        // Store predictions in MongoDB if connected
+        if (mongoConnected) {
+          try {
+            const result = await mongoService.storePredictions(game, game.predictions);
+            if (result.success) {
+              console.log(`Successfully stored predictions for game ${game.id} in MongoDB`);
+            } else {
+              console.warn(`Failed to store predictions for game ${game.id} in MongoDB: ${result.error}`);
+            }
+          } catch (error) {
+            console.warn(`Error storing predictions for game ${game.id} in MongoDB:`, error.message);
+          }
         }
+      } catch (error) {
+        console.warn(`Error generating predictions for game ${game.id}:`, error.message);
+        console.log(`Using fallback predictions for game ${game.id}`);
       }
     }
     
@@ -477,12 +514,28 @@ async function main() {
     
     // Step 5: Close MongoDB connection
     if (mongoConnected) {
-      await mongoService.close();
+      try {
+        await mongoService.close();
+      } catch (error) {
+        console.warn('Error closing MongoDB connection:', error.message);
+      }
     }
     
     console.log('MLB data and prediction update completed successfully');
   } catch (error) {
     console.error('Error in main function:', error);
+    // Even if there's an error, try to update the HTML with what we have
+    console.log('Attempting to update HTML with available data despite errors...');
+    try {
+      // Create a timestamp to force update
+      const timestamp = new Date().toISOString();
+      const htmlContent = fs.readFileSync(STATIC_DATA_PATH, 'utf8');
+      const updatedHtml = htmlContent.replace(/<head>/, `<head>\n  <!-- Last updated: ${timestamp} -->`);
+      fs.writeFileSync(STATIC_DATA_PATH, updatedHtml);
+      console.log('Added timestamp to HTML to force update');
+    } catch (htmlError) {
+      console.error('Failed to update HTML with timestamp:', htmlError);
+    }
   }
 }
 
