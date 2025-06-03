@@ -398,7 +398,7 @@ async function updateHtmlWithPredictions(games) {
   try {
     // Read the current HTML file
     const htmlContent = fs.readFileSync(STATIC_DATA_PATH, 'utf8');
-    
+
     // Create a new HTML content with updated predictions
     let updatedHtml = htmlContent;
     
@@ -436,6 +436,46 @@ async function updateHtmlWithPredictions(games) {
         { source: 'Grok', text: predictions.grok },
         { source: 'DeepSeek', text: predictions.deepseek }
       ];
+    }
+
+    // Update the game card markup in the HTML
+    const $ = cheerio.load(updatedHtml);
+    const container = $('.games-container');
+    if (container.length) {
+      container.empty();
+      for (const [id, game] of Object.entries(gamesObj)) {
+        const card = `
+        <div class="game-card">
+            <div class="game-header">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/${game.away.abbr.toLowerCase()}_logo.svg" alt="${game.away.team} logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">${game.away.abbr}</div>
+                    <div class="team-record">${game.away.record}</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/${game.home.abbr.toLowerCase()}_logo.svg" alt="${game.home.team} logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">${game.home.abbr}</div>
+                    <div class="team-record">${game.home.record}</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">${game.date}</div>
+                <div class="game-time">${game.time}</div>
+                <div class="game-venue">${game.venue}</div>
+            </div>
+            <button class="predictions-button" data-game-id="${id}" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-${id}">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>`;
+        container.append(card);
+      }
+      updatedHtml = $.html();
     }
 
     // Replace game data
