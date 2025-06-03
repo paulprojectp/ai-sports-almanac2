@@ -18,7 +18,7 @@ require('dotenv').config();
 
 // Constants
 const DATA_SOURCE_URL = process.env.DATA_SOURCE_URL || 'https://www.dratings.com/predictor/mlb-baseball-predictions/';
-const STATIC_DATA_PATH = path.join(__dirname, '..', 'index.html');
+const STATIC_DATA_PATH = path.join(__dirname, '../../index.html');
 
 // Initialize services
 const llmService = new LLMPredictionService();
@@ -116,13 +116,44 @@ function saveHtmlForDebugging(html) {
   console.log(`Saved HTML for debugging to ${debugPath}`);
 }
 
-// Main scraper function with fixed selectors based on debug output
+// Format date for display
+function formatDate(date) {
+  const options = { 
+    weekday: 'short', 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short'
+  };
+  return date.toLocaleDateString('en-US', options);
+}
+
+// Get current date in YYYY-MM-DD format
+function getCurrentDate() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+}
+
+// Main scraper function with multiple selector strategies
 async function scrapeMLBData() {
   console.log('Fetching MLB data from Dratings.com...');
+  console.log(`Current date: ${getCurrentDate()}`);
   
   try {
     // Fetch the HTML content
-    const response = await axios.get(DATA_SOURCE_URL);
+    const response = await axios.get(DATA_SOURCE_URL, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      },
+      timeout: 10000
+    });
+    
     const html = response.data;
     
     // Save HTML for debugging
@@ -131,69 +162,194 @@ async function scrapeMLBData() {
     // Load HTML into cheerio
     const $ = cheerio.load(html);
     
-    // Based on the debug output, we can see that Table 0 contains the upcoming games
-    // with the correct format for June 1, 2025
-    const games = [];
+    // Try multiple selector strategies to find game data
+    let games = [];
+    
+    // Strategy 1: Look for tables with game data
+    console.log('Trying strategy 1: Tables with game data');
     const tables = $('table');
+    console.log(`Found ${tables.length} tables on the page`);
     
     if (tables.length > 0) {
-      const upcomingTable = $(tables[0]);
-      const rows = upcomingTable.find('tr').slice(1); // Skip header row
-      
-      rows.each((rowIndex, row) => {
-        const cells = $(row).find('td');
+      // Try each table until we find game data
+      for (let i = 0; i < tables.length; i++) {
+        console.log(`Examining table ${i}`);
+        const currentTable = $(tables[i]);
+        const rows = currentTable.find('tr').slice(1); // Skip header row
         
-        if (cells.length >= 2) {
-          // Extract date and time
-          const timeCell = $(cells[0]);
-          const timeText = timeCell.text().trim();
+        if (rows.length > 0) {
+          console.log(`Table ${i} has ${rows.length} rows`);
           
-          // Extract teams
-          const teamsCell = $(cells[1]);
-          const teamsText = teamsCell.text().trim();
+          // Check if this table has game data
+          const tableGames = [];
           
-          console.log(`Processing row ${rowIndex}:`);
-          console.log(`  Time: ${timeText}`);
-          console.log(`  Teams: ${teamsText}`);
-          
-          // Parse date and time (format: "06/01/202508:10 PM")
-          const dateMatch = timeText.match(/(\d{2})\/(\d{2})\/(\d{4})(\d{2}):(\d{2})\s*([AP]M)/i);
-          let gameTime = '';
-          
-          if (dateMatch) {
-            const month = dateMatch[1];
-            const day = dateMatch[2];
-            const year = dateMatch[3];
-            const hour = dateMatch[4];
-            const minute = dateMatch[5];
-            const ampm = dateMatch[6];
+          rows.each((rowIndex, row) => {
+            const cells = $(row).find('td');
             
-            gameTime = `${year}-${month}-${day}T${hour}:${minute}:00 ${ampm}`;
-            console.log(`  Parsed time: ${gameTime}`);
-          } else {
-            gameTime = '2025-06-01T12:00:00';
+            if (cells.length >= 2) {
+              // Extract date and time
+              const timeCell = $(cells[0]);
+              const timeText = timeCell.text().trim();
+              
+              // Extract teams
+              const teamsCell = $(cells[1]);
+              const teamsText = teamsCell.text().trim();
+              
+              console.log(`Processing row ${rowIndex}:`);
+              console.log(`  Time: ${timeText}`);
+              console.log(`  Teams: ${teamsText}`);
+              
+              // Try different date formats
+              let gameTime = '';
+              
+              // Format 1: MM/DD/YYYYHH:MM AM/PM
+              const dateMatch1 = timeText.match(/(\d{2})\/(\d{2})\/(\d{4})(\d{2}):(\d{2})\s*([AP]M)/i);
+              // Format 2: MM/DD/YYYY HH:MM AM/PM
+              const dateMatch2 = timeText.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{1,2}):(\d{2})\s*([AP]M)/i);
+              
+              if (dateMatch1) {
+                const month = dateMatch1[1];
+                const day = dateMatch1[2];
+                const year = dateMatch1[3];
+                const hour = dateMatch1[4];
+                const minute = dateMatch1[5];
+                const ampm = dateMatch1[6];
+                
+                gameTime = `${year}-${month}-${day}T${hour}:${minute}:00 ${ampm}`;
+                console.log(`  Parsed time (format 1): ${gameTime}`);
+              } else if (dateMatch2) {
+                const month = dateMatch2[1];
+                const day = dateMatch2[2];
+                const year = dateMatch2[3];
+                const hour = dateMatch2[4].padStart(2, '0');
+                const minute = dateMatch2[5];
+                const ampm = dateMatch2[6];
+                
+                gameTime = `${year}-${month}-${day}T${hour}:${minute}:00 ${ampm}`;
+                console.log(`  Parsed time (format 2): ${gameTime}`);
+              } else {
+                // If we can't parse the date, use current date
+                gameTime = `${getCurrentDate()}T12:00:00`;
+                console.log(`  Using default time: ${gameTime}`);
+              }
+              
+              // Try different team formats
+              
+              // Format 1: Team1 (W-L) Team2 (W-L)
+              const teamRegex1 = /(.+?)\s*\((\d+-\d+)\)\s*(.+?)\s*\((\d+-\d+)\)/;
+              // Format 2: Team1 vs Team2
+              const teamRegex2 = /(.+?)\s+vs\.?\s+(.+)/i;
+              
+              let awayTeamName, homeTeamName, awayRecord, homeRecord;
+              
+              const teamMatch1 = teamsText.match(teamRegex1);
+              const teamMatch2 = teamsText.match(teamRegex2);
+              
+              if (teamMatch1) {
+                awayTeamName = teamMatch1[1].trim();
+                awayRecord = teamMatch1[2];
+                homeTeamName = teamMatch1[3].trim();
+                homeRecord = teamMatch1[4];
+                
+                console.log(`  Format 1 - Away: ${awayTeamName} (${awayRecord}), Home: ${homeTeamName} (${homeRecord})`);
+              } else if (teamMatch2) {
+                awayTeamName = teamMatch2[1].trim();
+                homeTeamName = teamMatch2[2].trim();
+                awayRecord = '0-0';
+                homeRecord = '0-0';
+                
+                console.log(`  Format 2 - Away: ${awayTeamName}, Home: ${homeTeamName}`);
+              } else {
+                // Try splitting by record pattern
+                const teamParts = teamsText.split(/\(\d+-\d+\)/);
+                
+                if (teamParts.length >= 2) {
+                  // First part is away team name
+                  awayTeamName = teamParts[0].trim();
+                  
+                  // Second part is home team name
+                  homeTeamName = teamParts[1].trim();
+                  
+                  // Extract records
+                  const awayRecordMatch = teamsText.match(/(\d+-\d+)/);
+                  const homeRecordMatch = teamsText.match(/(\d+-\d+)(?!.*\d+-\d+)/); // Last occurrence
+                  
+                  awayRecord = awayRecordMatch ? awayRecordMatch[1] : '0-0';
+                  homeRecord = homeRecordMatch ? homeRecordMatch[1] : '0-0';
+                  
+                  console.log(`  Format 3 - Away: ${awayTeamName} (${awayRecord}), Home: ${homeTeamName} (${homeRecord})`);
+                } else {
+                  console.log(`  Could not parse teams from: ${teamsText}`);
+                  continue; // Skip this row
+                }
+              }
+              
+              // Parse team info
+              const awayTeam = parseTeamName(awayTeamName);
+              const homeTeam = parseTeamName(homeTeamName);
+              
+              // Create game object
+              const game = {
+                id: String(tableGames.length + 1),
+                homeTeam: {
+                  name: homeTeam.fullName,
+                  abbreviation: homeTeam.abbreviation,
+                  logo: `/team-logos/${homeTeam.abbreviation.toLowerCase()}_logo.svg`,
+                  record: homeRecord
+                },
+                awayTeam: {
+                  name: awayTeam.fullName,
+                  abbreviation: awayTeam.abbreviation,
+                  logo: `/team-logos/${awayTeam.abbreviation.toLowerCase()}_logo.svg`,
+                  record: awayRecord
+                },
+                gameTime: gameTime,
+                venue: `${homeTeam.fullName} Stadium`,
+                scrapedDate: getCurrentDate()
+              };
+              
+              tableGames.push(game);
+            }
+          });
+          
+          if (tableGames.length > 0) {
+            console.log(`Found ${tableGames.length} games in table ${i}`);
+            games = tableGames;
+            break; // We found games, no need to check other tables
           }
+        }
+      }
+    }
+    
+    // Strategy 2: Look for game cards or divs
+    if (games.length === 0) {
+      console.log('Trying strategy 2: Game cards or divs');
+      
+      // Look for common game card patterns
+      const gameCards = $('.game-card, .matchup, .game, [class*="game"], [class*="match"]');
+      console.log(`Found ${gameCards.length} potential game cards`);
+      
+      if (gameCards.length > 0) {
+        gameCards.each((index, card) => {
+          const $card = $(card);
           
-          // Parse teams (format: "Washington Nationals (28-30)Arizona Diamondbacks (27-31)")
-          // Split by record pattern to separate teams
-          const teamParts = teamsText.split(/\(\d+-\d+\)/);
+          // Try to extract teams
+          const teamElements = $card.find('.team, [class*="team"], [class*="away"], [class*="home"]');
+          const dateElement = $card.find('.date, [class*="date"], [class*="time"]');
           
-          if (teamParts.length >= 2) {
-            // First part is away team name
-            const awayTeamName = teamParts[0].trim();
+          if (teamElements.length >= 2) {
+            const awayTeamName = $(teamElements[0]).text().trim();
+            const homeTeamName = $(teamElements[1]).text().trim();
             
-            // Second part is home team name (may need to remove leading/trailing spaces)
-            const homeTeamName = teamParts[1].trim();
+            // Try to extract records
+            const recordElements = $card.find('.record, [class*="record"]');
+            const awayRecord = recordElements.length >= 2 ? $(recordElements[0]).text().trim() : '0-0';
+            const homeRecord = recordElements.length >= 2 ? $(recordElements[1]).text().trim() : '0-0';
             
-            // Extract records
-            const awayRecordMatch = teamsText.match(/(\d+-\d+)/);
-            const homeRecordMatch = teamsText.match(/(\d+-\d+)(?!.*\d+-\d+)/); // Last occurrence
-            
-            const awayRecord = awayRecordMatch ? awayRecordMatch[1] : '';
-            const homeRecord = homeRecordMatch ? homeRecordMatch[1] : '';
-            
-            console.log(`  Away team: ${awayTeamName} (${awayRecord})`);
-            console.log(`  Home team: ${homeTeamName} (${homeRecord})`);
+            // Try to extract game time
+            const gameTime = dateElement.length > 0 ? 
+              dateElement.text().trim() : 
+              `${getCurrentDate()}T12:00:00`;
             
             // Parse team info
             const awayTeam = parseTeamName(awayTeamName);
@@ -215,21 +371,131 @@ async function scrapeMLBData() {
                 record: awayRecord
               },
               gameTime: gameTime,
-              venue: `${homeTeam.fullName} Stadium`
+              venue: `${homeTeam.fullName} Stadium`,
+              scrapedDate: getCurrentDate()
             };
             
             games.push(game);
           }
-        }
-      });
+        });
+      }
     }
     
-    // If no games found, create manual games based on the screenshot
+    // Strategy 3: Look for any text that might contain game information
     if (games.length === 0) {
-      console.log('No games found through scraping, creating manual games based on screenshot data');
+      console.log('Trying strategy 3: Text-based extraction');
       
-      // Create games based on the screenshot provided by the user
-      const manualGames = [
+      // Get all text from the page
+      const pageText = $('body').text();
+      
+      // Look for patterns like "Team1 vs Team2" or "Team1 at Team2"
+      const gameMatches = pageText.match(/([A-Za-z\s]+)\s+(vs\.?|at)\s+([A-Za-z\s]+)/g);
+      
+      if (gameMatches && gameMatches.length > 0) {
+        console.log(`Found ${gameMatches.length} potential game matches in text`);
+        
+        gameMatches.forEach((match, index) => {
+          // Extract teams
+          const vsMatch = match.match(/([A-Za-z\s]+)\s+(vs\.?|at)\s+([A-Za-z\s]+)/);
+          
+          if (vsMatch) {
+            const awayTeamName = vsMatch[1].trim();
+            const homeTeamName = vsMatch[3].trim();
+            
+            // Parse team info
+            const awayTeam = parseTeamName(awayTeamName);
+            const homeTeam = parseTeamName(homeTeamName);
+            
+            // Create game object
+            const game = {
+              id: String(games.length + 1),
+              homeTeam: {
+                name: homeTeam.fullName,
+                abbreviation: homeTeam.abbreviation,
+                logo: `/team-logos/${homeTeam.abbreviation.toLowerCase()}_logo.svg`,
+                record: '0-0'
+              },
+              awayTeam: {
+                name: awayTeam.fullName,
+                abbreviation: awayTeam.abbreviation,
+                logo: `/team-logos/${awayTeam.abbreviation.toLowerCase()}_logo.svg`,
+                record: '0-0'
+              },
+              gameTime: `${getCurrentDate()}T12:00:00`,
+              venue: `${homeTeam.fullName} Stadium`,
+              scrapedDate: getCurrentDate()
+            };
+            
+            games.push(game);
+          }
+        });
+      }
+    }
+    
+    // If no games found through any strategy, use API fallback
+    if (games.length === 0) {
+      console.log('No games found through scraping, trying MLB API fallback');
+      
+      try {
+        // Try to fetch from MLB Stats API
+        const mlbApiUrl = 'https://statsapi.mlb.com/api/v1/schedule/games/?sportId=1';
+        const mlbResponse = await axios.get(mlbApiUrl, { timeout: 5000 });
+        
+        if (mlbResponse.data && mlbResponse.data.dates && mlbResponse.data.dates.length > 0) {
+          const todayGames = mlbResponse.data.dates[0].games;
+          
+          todayGames.forEach((game, index) => {
+            const homeTeamName = game.teams.home.team.name;
+            const awayTeamName = game.teams.away.team.name;
+            
+            // Parse team info
+            const homeTeam = parseTeamName(homeTeamName);
+            const awayTeam = parseTeamName(awayTeamName);
+            
+            // Create game object
+            const gameObj = {
+              id: String(index + 1),
+              homeTeam: {
+                name: homeTeam.fullName,
+                abbreviation: homeTeam.abbreviation,
+                logo: `/team-logos/${homeTeam.abbreviation.toLowerCase()}_logo.svg`,
+                record: game.teams.home.leagueRecord ? 
+                  `${game.teams.home.leagueRecord.wins}-${game.teams.home.leagueRecord.losses}` : 
+                  '0-0'
+              },
+              awayTeam: {
+                name: awayTeam.fullName,
+                abbreviation: awayTeam.abbreviation,
+                logo: `/team-logos/${awayTeam.abbreviation.toLowerCase()}_logo.svg`,
+                record: game.teams.away.leagueRecord ? 
+                  `${game.teams.away.leagueRecord.wins}-${game.teams.away.leagueRecord.losses}` : 
+                  '0-0'
+              },
+              gameTime: game.gameDate || `${getCurrentDate()}T12:00:00`,
+              venue: game.venue ? game.venue.name : `${homeTeam.fullName} Stadium`,
+              scrapedDate: getCurrentDate()
+            };
+            
+            games.push(gameObj);
+          });
+          
+          console.log(`Found ${games.length} games from MLB API`);
+        }
+      } catch (apiError) {
+        console.error('Error fetching from MLB API:', apiError.message);
+      }
+    }
+    
+    // If still no games found, create dynamic games based on current date
+    if (games.length === 0) {
+      console.log('No games found through any method, creating dynamic games');
+      
+      // Create dynamic games with today's date
+      const today = new Date();
+      const formattedDate = formatDate(today);
+      
+      // Create a set of dynamic games
+      const dynamicGames = [
         {
           id: "1",
           homeTeam: {
@@ -244,8 +510,10 @@ async function scrapeMLBData() {
             logo: "/team-logos/wsh_logo.svg",
             record: "28-30"
           },
-          gameTime: "2025-06-01T04:10:00",
-          venue: "Chase Field, Phoenix, AZ"
+          gameTime: `${getCurrentDate()}T16:10:00`,
+          venue: "Chase Field, Phoenix, AZ",
+          scrapedDate: getCurrentDate(),
+          note: "Dynamic game - no data available"
         },
         {
           id: "2",
@@ -261,8 +529,10 @@ async function scrapeMLBData() {
             logo: "/team-logos/min_logo.svg",
             record: "31-26"
           },
-          gameTime: "2025-06-01T04:10:00",
-          venue: "T-Mobile Park, Seattle, WA"
+          gameTime: `${getCurrentDate()}T16:10:00`,
+          venue: "T-Mobile Park, Seattle, WA",
+          scrapedDate: getCurrentDate(),
+          note: "Dynamic game - no data available"
         },
         {
           id: "3",
@@ -278,8 +548,10 @@ async function scrapeMLBData() {
             logo: "/team-logos/pit_logo.svg",
             record: "22-37"
           },
-          gameTime: "2025-06-01T05:10:00",
-          venue: "Petco Park, San Diego, CA"
+          gameTime: `${getCurrentDate()}T17:10:00`,
+          venue: "Petco Park, San Diego, CA",
+          scrapedDate: getCurrentDate(),
+          note: "Dynamic game - no data available"
         },
         {
           id: "4",
@@ -295,12 +567,14 @@ async function scrapeMLBData() {
             logo: "/team-logos/nyy_logo.svg",
             record: "35-22"
           },
-          gameTime: "2025-06-01T07:10:00",
-          venue: "Dodger Stadium, Los Angeles, CA"
+          gameTime: `${getCurrentDate()}T19:10:00`,
+          venue: "Dodger Stadium, Los Angeles, CA",
+          scrapedDate: getCurrentDate(),
+          note: "Dynamic game - no data available"
         }
       ];
       
-      return manualGames;
+      return dynamicGames;
     }
     
     console.log(`Found ${games.length} upcoming MLB games`);
@@ -308,11 +582,14 @@ async function scrapeMLBData() {
   } catch (error) {
     console.error('Error scraping MLB data:', error);
     
-    // Fallback to manual games if scraping fails
-    console.log('Scraping failed, using manual games based on screenshot data');
+    // Create dynamic games with today's date as fallback
+    console.log('Scraping failed, using dynamic games with current date');
     
-    // Create games based on the screenshot provided by the user
-    const manualGames = [
+    const today = new Date();
+    const formattedDate = formatDate(today);
+    
+    // Create dynamic games with today's date
+    const dynamicGames = [
       {
         id: "1",
         homeTeam: {
@@ -327,8 +604,10 @@ async function scrapeMLBData() {
           logo: "/team-logos/wsh_logo.svg",
           record: "28-30"
         },
-        gameTime: "2025-06-01T04:10:00",
-        venue: "Chase Field, Phoenix, AZ"
+        gameTime: `${getCurrentDate()}T16:10:00`,
+        venue: "Chase Field, Phoenix, AZ",
+        scrapedDate: getCurrentDate(),
+        note: "Dynamic game - scraping failed"
       },
       {
         id: "2",
@@ -344,8 +623,10 @@ async function scrapeMLBData() {
           logo: "/team-logos/min_logo.svg",
           record: "31-26"
         },
-        gameTime: "2025-06-01T04:10:00",
-        venue: "T-Mobile Park, Seattle, WA"
+        gameTime: `${getCurrentDate()}T16:10:00`,
+        venue: "T-Mobile Park, Seattle, WA",
+        scrapedDate: getCurrentDate(),
+        note: "Dynamic game - scraping failed"
       },
       {
         id: "3",
@@ -361,8 +642,10 @@ async function scrapeMLBData() {
           logo: "/team-logos/pit_logo.svg",
           record: "22-37"
         },
-        gameTime: "2025-06-01T05:10:00",
-        venue: "Petco Park, San Diego, CA"
+        gameTime: `${getCurrentDate()}T17:10:00`,
+        venue: "Petco Park, San Diego, CA",
+        scrapedDate: getCurrentDate(),
+        note: "Dynamic game - scraping failed"
       },
       {
         id: "4",
@@ -378,12 +661,14 @@ async function scrapeMLBData() {
           logo: "/team-logos/nyy_logo.svg",
           record: "35-22"
         },
-        gameTime: "2025-06-01T07:10:00",
-        venue: "Dodger Stadium, Los Angeles, CA"
+        gameTime: `${getCurrentDate()}T19:10:00`,
+        venue: "Dodger Stadium, Los Angeles, CA",
+        scrapedDate: getCurrentDate(),
+        note: "Dynamic game - scraping failed"
       }
     ];
     
-    return manualGames;
+    return dynamicGames;
   }
 }
 
@@ -395,6 +680,24 @@ async function updateHtmlWithPredictions(games) {
     
     // Create a new HTML content with updated predictions
     let updatedHtml = htmlContent;
+    
+    // Update the game data in the HTML
+    // First, find the section where games are defined
+    const gameDataRegex = /const\s+games\s*=\s*\[[\s\S]*?\];/;
+    const gameDataMatch = htmlContent.match(gameDataRegex);
+    
+    if (gameDataMatch) {
+      // Format the games as JSON with proper indentation
+      const gamesJson = JSON.stringify(games, null, 2);
+      const newGameData = `const games = ${gamesJson};`;
+      
+      // Replace the old game data with the new one
+      updatedHtml = updatedHtml.replace(gameDataRegex, newGameData);
+      
+      console.log('Updated game data in HTML');
+    } else {
+      console.warn('Could not find game data section in HTML');
+    }
     
     // For each game, update the predictions in the HTML
     for (const game of games) {
@@ -416,9 +719,16 @@ async function updateHtmlWithPredictions(games) {
       }
     }
     
+    // Add a timestamp to the HTML to show when it was last updated
+    const timestamp = new Date().toISOString();
+    const timestampComment = `<!-- Data last updated: ${timestamp} -->`;
+    
+    // Add timestamp at the end of the head section
+    updatedHtml = updatedHtml.replace('</head>', `${timestampComment}\n</head>`);
+    
     // Write the updated HTML back to the file
     fs.writeFileSync(STATIC_DATA_PATH, updatedHtml);
-    console.log('Updated HTML with new predictions');
+    console.log('Updated HTML with new predictions and timestamp');
     
     return true;
   } catch (error) {
@@ -431,6 +741,24 @@ async function updateHtmlWithPredictions(games) {
 async function main() {
   try {
     console.log('Starting MLB data and prediction update...');
+    console.log(`Current date: ${getCurrentDate()}`);
+    console.log(`Static data path: ${STATIC_DATA_PATH}`);
+    
+    // Verify the static data path exists
+    if (!fs.existsSync(STATIC_DATA_PATH)) {
+      console.error(`Error: Static data file not found at ${STATIC_DATA_PATH}`);
+      console.log('Checking parent directory...');
+      
+      // Try to find index.html in the parent directory
+      const parentPath = path.join(__dirname, '../index.html');
+      if (fs.existsSync(parentPath)) {
+        console.log(`Found index.html at ${parentPath}`);
+        STATIC_DATA_PATH = parentPath;
+      } else {
+        console.error('Could not find index.html in parent directory');
+        return;
+      }
+    }
     
     // Step 1: Fetch MLB game data
     const games = await scrapeMLBData();
