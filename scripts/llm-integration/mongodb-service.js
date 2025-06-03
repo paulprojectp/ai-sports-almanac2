@@ -29,8 +29,9 @@ class MongoDBService {
     try {
       this.client = new MongoClient(this.uri);
       await this.client.connect();
-      
-      this.db = this.client.db('ai-sports-almanac');
+
+      const dbName = process.env.MONGODB_DB_NAME || 'ai-sports-almanac';
+      this.db = this.client.db(dbName);
       this.predictions = this.db.collection('predictions');
       
       console.log('Connected to MongoDB');
