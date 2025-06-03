@@ -284,27 +284,6 @@
             background-color: #1557b0;
         }
         
-        .api-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.25rem;
-            font-size: 0.8rem;
-        }
-        
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-        
-        .status-indicator.active {
-            background-color: #4caf50;
-        }
-        
-        .status-indicator.inactive {
-            background-color: #f44336;
-        }
         
         .loading-spinner {
             display: inline-block;
@@ -350,13 +329,6 @@
 <body>
     <header>
         <h1>AI Sports Almanac</h1>
-        <button id="settingsButton" class="settings-button">
-            <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-            API Settings
-        </button>
     </header>
     
     <main>
@@ -486,51 +458,6 @@
         </div>
     </main>
     
-    <!-- API Settings Modal -->
-    <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">API Settings</h2>
-                <button id="closeModal" class="close-button">&times;</button>
-            </div>
-            <p>Enter your API keys to get real predictions from AI models. Your keys are stored only in your browser and are never sent to our servers.</p>
-            <form id="apiKeyForm" class="api-key-form">
-                <div class="form-group">
-                    <label for="openaiKey">OpenAI API Key</label>
-                    <input type="password" id="openaiKey" placeholder="sk-...">
-                    <div class="api-status">
-                        <div id="openaiStatus" class="status-indicator inactive"></div>
-                        <span id="openaiStatusText">Not configured</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="anthropicKey">Anthropic API Key</label>
-                    <input type="password" id="anthropicKey" placeholder="sk-ant-...">
-                    <div class="api-status">
-                        <div id="anthropicStatus" class="status-indicator inactive"></div>
-                        <span id="anthropicStatusText">Not configured</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="grokKey">Grok API Key</label>
-                    <input type="password" id="grokKey" placeholder="grok-...">
-                    <div class="api-status">
-                        <div id="grokStatus" class="status-indicator inactive"></div>
-                        <span id="grokStatusText">Not configured</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="deepseekKey">DeepSeek API Key</label>
-                    <input type="password" id="deepseekKey" placeholder="deepseek-...">
-                    <div class="api-status">
-                        <div id="deepseekStatus" class="status-indicator inactive"></div>
-                        <span id="deepseekStatusText">Not configured</span>
-                    </div>
-                </div>
-                <button type="submit" class="save-button">Save API Keys</button>
-            </form>
-        </div>
-    </div>
     
     <script>
         // Store API keys in session storage
@@ -978,101 +905,6 @@
     ]
 };
         
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Settings modal functionality
-            const settingsButton = document.getElementById('settingsButton');
-            const settingsModal = document.getElementById('settingsModal');
-            const closeModal = document.getElementById('closeModal');
-            const apiKeyForm = document.getElementById('apiKeyForm');
-            
-            // Populate form with stored API keys
-            document.getElementById('openaiKey').value = API_KEYS.openai;
-            document.getElementById('anthropicKey').value = API_KEYS.anthropic;
-            document.getElementById('grokKey').value = API_KEYS.grok;
-            document.getElementById('deepseekKey').value = API_KEYS.deepseek;
-            
-            // Update status indicators
-            updateApiStatusIndicators();
-            
-            // Open settings modal
-            settingsButton.addEventListener('click', function() {
-                settingsModal.classList.add('active');
-            });
-            
-            // Close settings modal
-            closeModal.addEventListener('click', function() {
-                settingsModal.classList.remove('active');
-            });
-            
-            // Close modal when clicking outside
-            window.addEventListener('click', function(event) {
-                if (event.target === settingsModal) {
-                    settingsModal.classList.remove('active');
-                }
-            });
-            
-            // Save API keys
-            apiKeyForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-                
-                // Get values from form
-                const openaiKey = document.getElementById('openaiKey').value.trim();
-                const anthropicKey = document.getElementById('anthropicKey').value.trim();
-                const grokKey = document.getElementById('grokKey').value.trim();
-                const deepseekKey = document.getElementById('deepseekKey').value.trim();
-                
-                // Store API keys in session storage
-                if (openaiKey) {
-                    sessionStorage.setItem('openai_api_key', openaiKey);
-                    API_KEYS.openai = openaiKey;
-                }
-                
-                if (anthropicKey) {
-                    sessionStorage.setItem('anthropic_api_key', anthropicKey);
-                    API_KEYS.anthropic = anthropicKey;
-                }
-                
-                if (grokKey) {
-                    sessionStorage.setItem('grok_api_key', grokKey);
-                    API_KEYS.grok = grokKey;
-                }
-                
-                if (deepseekKey) {
-                    sessionStorage.setItem('deepseek_api_key', deepseekKey);
-                    API_KEYS.deepseek = deepseekKey;
-                }
-                
-                // Update status indicators
-                updateApiStatusIndicators();
-                
-                // Close modal
-                settingsModal.classList.remove('active');
-                
-                // Show success message
-                alert('API keys saved successfully!');
-            });
-        });
-        
-        // Update API status indicators
-        function updateApiStatusIndicators() {
-            const providers = ['openai', 'anthropic', 'grok', 'deepseek'];
-            
-            providers.forEach(provider => {
-                const statusElement = document.getElementById(`${provider}Status`);
-                const statusTextElement = document.getElementById(`${provider}StatusText`);
-                
-                if (API_KEYS[provider]) {
-                    statusElement.classList.remove('inactive');
-                    statusElement.classList.add('active');
-                    statusTextElement.textContent = 'Configured';
-                } else {
-                    statusElement.classList.remove('active');
-                    statusElement.classList.add('inactive');
-                    statusTextElement.textContent = 'Not configured';
-                }
-            });
-        }
         
         // Toggle predictions visibility
         function togglePredictions(button) {
