@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Last updated: 2025-06-03T22:41:50.238Z -->
+  <!-- Last updated: 2025-06-03T22:44:42.516Z -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Sports Almanac</title>
@@ -543,140 +543,437 @@
         
         // Game data
         const GAMES = {
-    "wsh-ari": {
+    "chc-wsh": {
         "away": {
-            "team": "Washington Nationals",
-            "abbr": "WSH",
-            "record": "28-30"
+            "team": "Chicago Cubs",
+            "abbr": "CHC",
+            "record": "37-22"
         },
         "home": {
+            "team": "Washington Nationals",
+            "abbr": "WSH",
+            "record": "28-31"
+        },
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "Washington Nationals Stadium"
+    },
+    "cle-nyy": {
+        "away": {
+            "team": "Cleveland Guardians",
+            "abbr": "CLE",
+            "record": "32-26"
+        },
+        "home": {
+            "team": "New York Yankees",
+            "abbr": "NYY",
+            "record": "36-22"
+        },
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "New York Yankees Stadium"
+    },
+    "phi-tor": {
+        "away": {
+            "team": "Philadelphia Phillies",
+            "abbr": "PHI",
+            "record": "36-23"
+        },
+        "home": {
+            "team": "Toronto Blue Jays",
+            "abbr": "TOR",
+            "record": "31-28"
+        },
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "Toronto Blue Jays Stadium"
+    },
+    "mil-cin": {
+        "away": {
+            "team": "Milwaukee Brewers",
+            "abbr": "MIL",
+            "record": "33-28"
+        },
+        "home": {
+            "team": "Cincinnati Reds",
+            "abbr": "CIN",
+            "record": "29-32"
+        },
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "Cincinnati Reds Stadium"
+    },
+    "laa-bos": {
+        "away": {
+            "team": "Los Angeles Angels",
+            "abbr": "LAA",
+            "record": "27-32"
+        },
+        "home": {
+            "team": "Boston Red Sox",
+            "abbr": "BOS",
+            "record": "29-33"
+        },
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "Boston Red Sox Stadium"
+    },
+    "ari-atl": {
+        "away": {
             "team": "Arizona Diamondbacks",
             "abbr": "ARI",
+            "record": "28-31"
+        },
+        "home": {
+            "team": "Atlanta Braves",
+            "abbr": "ATL",
             "record": "27-31"
         },
-        "time": "12:10 AM EDT",
-        "date": "Sun, Jun 1",
-        "venue": "Chase Field, Phoenix, AZ"
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "Atlanta Braves Stadium"
     },
-    "min-sea": {
+    "tex-tb": {
         "away": {
-            "team": "Minnesota Twins",
-            "abbr": "MIN",
-            "record": "31-26"
+            "team": "Texas Rangers",
+            "abbr": "TEX",
+            "record": "29-31"
+        },
+        "home": {
+            "team": "Tampa Bay Rays",
+            "abbr": "TB",
+            "record": "30-29"
+        },
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "Tampa Bay Rays Stadium"
+    },
+    "det-cws": {
+        "away": {
+            "team": "Detroit Tigers",
+            "abbr": "DET",
+            "record": "40-21"
+        },
+        "home": {
+            "team": "Chicago White Sox",
+            "abbr": "CWS",
+            "record": "18-42"
+        },
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "Chicago White Sox Stadium"
+    },
+    "kc-stl": {
+        "away": {
+            "team": "Kansas City Royals",
+            "abbr": "KC",
+            "record": "31-29"
+        },
+        "home": {
+            "team": "St. Louis Cardinals",
+            "abbr": "STL",
+            "record": "33-26"
+        },
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "St. Louis Cardinals Stadium"
+    },
+    "bal-sea": {
+        "away": {
+            "team": "Baltimore Orioles",
+            "abbr": "BAL",
+            "record": "22-36"
         },
         "home": {
             "team": "Seattle Mariners",
             "abbr": "SEA",
-            "record": "31-26"
+            "record": "32-26"
         },
-        "time": "12:10 AM EDT",
-        "date": "Sun, Jun 1",
-        "venue": "T-Mobile Park, Seattle, WA"
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "Seattle Mariners Stadium"
     },
-    "pit-sd": {
+    "sd-sf": {
         "away": {
-            "team": "Pittsburgh Pirates",
-            "abbr": "PIT",
-            "record": "22-37"
-        },
-        "home": {
             "team": "San Diego Padres",
             "abbr": "SD",
-            "record": "32-24"
+            "record": "34-24"
         },
-        "time": "01:10 AM EDT",
-        "date": "Sun, Jun 1",
-        "venue": "Petco Park, San Diego, CA"
+        "home": {
+            "team": "San Francisco Giants",
+            "abbr": "SF",
+            "record": "33-27"
+        },
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "San Francisco Giants Stadium"
     },
-    "nyy-lad": {
+    "min-oak": {
         "away": {
-            "team": "New York Yankees",
-            "abbr": "NYY",
-            "record": "35-22"
+            "team": "Minnesota Twins",
+            "abbr": "MIN",
+            "record": "32-27"
+        },
+        "home": {
+            "team": "Oakland Athletics",
+            "abbr": "OAK",
+            "record": "23-38"
+        },
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "Oakland Athletics Stadium"
+    },
+    "nym-lad": {
+        "away": {
+            "team": "New York Mets",
+            "abbr": "NYM",
+            "record": "38-22"
         },
         "home": {
             "team": "Los Angeles Dodgers",
             "abbr": "LAD",
-            "record": "36-22"
+            "record": "36-24"
         },
-        "time": "03:10 AM EDT",
-        "date": "Sun, Jun 1",
-        "venue": "Dodger Stadium, Los Angeles, CA"
+        "time": "Invalid Date EDT",
+        "date": "Invalid Date",
+        "venue": "Los Angeles Dodgers Stadium"
     }
 };
         
         // Fallback predictions in case API calls fail
         const FALLBACK_PREDICTIONS = {
-    "wsh-ari": [
+    "chc-wsh": [
         {
             "source": "OpenAI",
-            "text": "Washington Nationals - Arizona Diamondbacks: 3-4\n\nThe Arizona Diamondbacks have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Washington Nationals's scoring opportunities."
+            "text": "Chicago Cubs - Washington Nationals: 3-3\n\nDespite playing away, the Chicago Cubs have shown better form with their 37-22 record compared to the Washington Nationals's 28-31. The Chicago Cubs's batting lineup has been more productive in recent games."
         },
         {
             "source": "Anthropic",
-            "text": "Washington Nationals - Arizona Diamondbacks: 1-5\n\nAfter analyzing both teams' strengths and weaknesses, the Arizona Diamondbacks appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Washington Nationals in this game."
+            "text": "Chicago Cubs - Washington Nationals: 5-1\n\nThe Chicago Cubs have been performing exceptionally well on the road this season, which gives them an edge despite playing away. Their bullpen has been more reliable than the Washington Nationals's relief pitchers in close game situations."
         },
         {
             "source": "Grok",
-            "text": "Washington Nationals - Arizona Diamondbacks: 3-3\n\nLooking at the batting averages and bullpen ERA, the Arizona Diamondbacks have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Chase Field, Phoenix, AZ."
+            "text": "Chicago Cubs - Washington Nationals: 5-1\n\nThe Chicago Cubs have been road warriors this season with impressive away statistics. Their offensive production has been significantly better than the Washington Nationals's in the last 10 games."
         },
         {
             "source": "DeepSeek",
-            "text": "Washington Nationals - Arizona Diamondbacks: 1-5\n\nStatistical analysis indicates the Arizona Diamondbacks have a 52% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+            "text": "Chicago Cubs - Washington Nationals: 4-1\n\nBased on advanced metrics, the Chicago Cubs have a 54% chance to win despite playing away from home. Their road OPS and pitching matchup advantages are significant factors in this prediction."
         }
     ],
-    "min-sea": [
+    "cle-nyy": [
         {
             "source": "OpenAI",
-            "text": "Minnesota Twins - Seattle Mariners: 2-4\n\nThe Seattle Mariners have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Minnesota Twins's scoring opportunities."
+            "text": "Cleveland Guardians - New York Yankees: 1-4\n\nThe New York Yankees have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Cleveland Guardians's scoring opportunities."
         },
         {
             "source": "Anthropic",
-            "text": "Minnesota Twins - Seattle Mariners: 3-3\n\nAfter analyzing both teams' strengths and weaknesses, the Seattle Mariners appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Minnesota Twins in this game."
+            "text": "Cleveland Guardians - New York Yankees: 2-4\n\nAfter analyzing both teams' strengths and weaknesses, the New York Yankees appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Cleveland Guardians in this game."
         },
         {
             "source": "Grok",
-            "text": "Minnesota Twins - Seattle Mariners: 1-4\n\nLooking at the batting averages and bullpen ERA, the Seattle Mariners have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at T-Mobile Park, Seattle, WA."
+            "text": "Cleveland Guardians - New York Yankees: 2-3\n\nLooking at the batting averages and bullpen ERA, the New York Yankees have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at New York Yankees Stadium."
         },
         {
             "source": "DeepSeek",
-            "text": "Minnesota Twins - Seattle Mariners: 3-4\n\nStatistical analysis indicates the Seattle Mariners have a 52% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+            "text": "Cleveland Guardians - New York Yankees: 2-5\n\nStatistical analysis indicates the New York Yankees have a 55% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
         }
     ],
-    "pit-sd": [
+    "phi-tor": [
         {
             "source": "OpenAI",
-            "text": "Pittsburgh Pirates - San Diego Padres: 2-5\n\nThe San Diego Padres have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Pittsburgh Pirates's scoring opportunities."
+            "text": "Philadelphia Phillies - Toronto Blue Jays: 5-1\n\nDespite playing away, the Philadelphia Phillies have shown better form with their 36-23 record compared to the Toronto Blue Jays's 31-28. The Philadelphia Phillies's batting lineup has been more productive in recent games."
         },
         {
             "source": "Anthropic",
-            "text": "Pittsburgh Pirates - San Diego Padres: 3-3\n\nAfter analyzing both teams' strengths and weaknesses, the San Diego Padres appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Pittsburgh Pirates in this game."
+            "text": "Philadelphia Phillies - Toronto Blue Jays: 4-2\n\nThe Philadelphia Phillies have been performing exceptionally well on the road this season, which gives them an edge despite playing away. Their bullpen has been more reliable than the Toronto Blue Jays's relief pitchers in close game situations."
         },
         {
             "source": "Grok",
-            "text": "Pittsburgh Pirates - San Diego Padres: 2-4\n\nLooking at the batting averages and bullpen ERA, the San Diego Padres have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Petco Park, San Diego, CA."
+            "text": "Philadelphia Phillies - Toronto Blue Jays: 5-2\n\nThe Philadelphia Phillies have been road warriors this season with impressive away statistics. Their offensive production has been significantly better than the Toronto Blue Jays's in the last 10 games."
         },
         {
             "source": "DeepSeek",
-            "text": "Pittsburgh Pirates - San Diego Padres: 1-3\n\nStatistical analysis indicates the San Diego Padres have a 62% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+            "text": "Philadelphia Phillies - Toronto Blue Jays: 6-1\n\nBased on advanced metrics, the Philadelphia Phillies have a 51% chance to win despite playing away from home. Their road OPS and pitching matchup advantages are significant factors in this prediction."
         }
     ],
-    "nyy-lad": [
+    "mil-cin": [
         {
             "source": "OpenAI",
-            "text": "New York Yankees - Los Angeles Dodgers: 2-6\n\nThe Los Angeles Dodgers have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the New York Yankees's scoring opportunities."
+            "text": "Milwaukee Brewers - Cincinnati Reds: 3-1\n\nDespite playing away, the Milwaukee Brewers have shown better form with their 33-28 record compared to the Cincinnati Reds's 29-32. The Milwaukee Brewers's batting lineup has been more productive in recent games."
         },
         {
             "source": "Anthropic",
-            "text": "New York Yankees - Los Angeles Dodgers: 1-6\n\nAfter analyzing both teams' strengths and weaknesses, the Los Angeles Dodgers appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the New York Yankees in this game."
+            "text": "Milwaukee Brewers - Cincinnati Reds: 6-2\n\nThe Milwaukee Brewers have been performing exceptionally well on the road this season, which gives them an edge despite playing away. Their bullpen has been more reliable than the Cincinnati Reds's relief pitchers in close game situations."
         },
         {
             "source": "Grok",
-            "text": "New York Yankees - Los Angeles Dodgers: 1-6\n\nLooking at the batting averages and bullpen ERA, the Los Angeles Dodgers have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Dodger Stadium, Los Angeles, CA."
+            "text": "Milwaukee Brewers - Cincinnati Reds: 5-3\n\nThe Milwaukee Brewers have been road warriors this season with impressive away statistics. Their offensive production has been significantly better than the Cincinnati Reds's in the last 10 games."
         },
         {
             "source": "DeepSeek",
-            "text": "New York Yankees - Los Angeles Dodgers: 2-5\n\nStatistical analysis indicates the Los Angeles Dodgers have a 52% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+            "text": "Milwaukee Brewers - Cincinnati Reds: 5-1\n\nBased on advanced metrics, the Milwaukee Brewers have a 51% chance to win despite playing away from home. Their road OPS and pitching matchup advantages are significant factors in this prediction."
+        }
+    ],
+    "laa-bos": [
+        {
+            "source": "OpenAI",
+            "text": "Los Angeles Angels - Boston Red Sox: 3-5\n\nThe Boston Red Sox have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Los Angeles Angels's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Los Angeles Angels - Boston Red Sox: 2-3\n\nAfter analyzing both teams' strengths and weaknesses, the Boston Red Sox appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Los Angeles Angels in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "Los Angeles Angels - Boston Red Sox: 2-6\n\nLooking at the batting averages and bullpen ERA, the Boston Red Sox have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Boston Red Sox Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Los Angeles Angels - Boston Red Sox: 1-3\n\nStatistical analysis indicates the Boston Red Sox have a 53% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+        }
+    ],
+    "ari-atl": [
+        {
+            "source": "OpenAI",
+            "text": "Arizona Diamondbacks - Atlanta Braves: 3-6\n\nThe Atlanta Braves have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Arizona Diamondbacks's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Arizona Diamondbacks - Atlanta Braves: 1-6\n\nAfter analyzing both teams' strengths and weaknesses, the Atlanta Braves appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Arizona Diamondbacks in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "Arizona Diamondbacks - Atlanta Braves: 2-5\n\nLooking at the batting averages and bullpen ERA, the Atlanta Braves have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Atlanta Braves Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Arizona Diamondbacks - Atlanta Braves: 3-5\n\nStatistical analysis indicates the Atlanta Braves have a 52% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+        }
+    ],
+    "tex-tb": [
+        {
+            "source": "OpenAI",
+            "text": "Texas Rangers - Tampa Bay Rays: 2-3\n\nThe Tampa Bay Rays have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Texas Rangers's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Texas Rangers - Tampa Bay Rays: 3-5\n\nAfter analyzing both teams' strengths and weaknesses, the Tampa Bay Rays appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Texas Rangers in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "Texas Rangers - Tampa Bay Rays: 2-4\n\nLooking at the batting averages and bullpen ERA, the Tampa Bay Rays have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Tampa Bay Rays Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Texas Rangers - Tampa Bay Rays: 1-6\n\nStatistical analysis indicates the Tampa Bay Rays have a 54% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+        }
+    ],
+    "det-cws": [
+        {
+            "source": "OpenAI",
+            "text": "Detroit Tigers - Chicago White Sox: 5-2\n\nDespite playing away, the Detroit Tigers have shown better form with their 40-21 record compared to the Chicago White Sox's 18-42. The Detroit Tigers's batting lineup has been more productive in recent games."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Detroit Tigers - Chicago White Sox: 5-3\n\nThe Detroit Tigers have been performing exceptionally well on the road this season, which gives them an edge despite playing away. Their bullpen has been more reliable than the Chicago White Sox's relief pitchers in close game situations."
+        },
+        {
+            "source": "Grok",
+            "text": "Detroit Tigers - Chicago White Sox: 6-3\n\nThe Detroit Tigers have been road warriors this season with impressive away statistics. Their offensive production has been significantly better than the Chicago White Sox's in the last 10 games."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Detroit Tigers - Chicago White Sox: 6-1\n\nBased on advanced metrics, the Detroit Tigers have a 65% chance to win despite playing away from home. Their road OPS and pitching matchup advantages are significant factors in this prediction."
+        }
+    ],
+    "kc-stl": [
+        {
+            "source": "OpenAI",
+            "text": "Kansas City Royals - St. Louis Cardinals: 2-6\n\nThe St. Louis Cardinals have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Kansas City Royals's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Kansas City Royals - St. Louis Cardinals: 3-4\n\nAfter analyzing both teams' strengths and weaknesses, the St. Louis Cardinals appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Kansas City Royals in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "Kansas City Royals - St. Louis Cardinals: 1-3\n\nLooking at the batting averages and bullpen ERA, the St. Louis Cardinals have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at St. Louis Cardinals Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Kansas City Royals - St. Louis Cardinals: 1-3\n\nStatistical analysis indicates the St. Louis Cardinals have a 54% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+        }
+    ],
+    "bal-sea": [
+        {
+            "source": "OpenAI",
+            "text": "Baltimore Orioles - Seattle Mariners: 3-6\n\nThe Seattle Mariners have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Baltimore Orioles's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Baltimore Orioles - Seattle Mariners: 1-3\n\nAfter analyzing both teams' strengths and weaknesses, the Seattle Mariners appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Baltimore Orioles in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "Baltimore Orioles - Seattle Mariners: 1-3\n\nLooking at the batting averages and bullpen ERA, the Seattle Mariners have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Seattle Mariners Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Baltimore Orioles - Seattle Mariners: 1-6\n\nStatistical analysis indicates the Seattle Mariners have a 61% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+        }
+    ],
+    "sd-sf": [
+        {
+            "source": "OpenAI",
+            "text": "San Diego Padres - San Francisco Giants: 2-5\n\nThe San Francisco Giants have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the San Diego Padres's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "San Diego Padres - San Francisco Giants: 1-6\n\nAfter analyzing both teams' strengths and weaknesses, the San Francisco Giants appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the San Diego Padres in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "San Diego Padres - San Francisco Giants: 2-6\n\nLooking at the batting averages and bullpen ERA, the San Francisco Giants have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at San Francisco Giants Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "San Diego Padres - San Francisco Giants: 2-3\n\nStatistical analysis indicates the San Francisco Giants have a 51% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+        }
+    ],
+    "min-oak": [
+        {
+            "source": "OpenAI",
+            "text": "Minnesota Twins - Oakland Athletics: 4-2\n\nDespite playing away, the Minnesota Twins have shown better form with their 32-27 record compared to the Oakland Athletics's 23-38. The Minnesota Twins's batting lineup has been more productive in recent games."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Minnesota Twins - Oakland Athletics: 4-1\n\nThe Minnesota Twins have been performing exceptionally well on the road this season, which gives them an edge despite playing away. Their bullpen has been more reliable than the Oakland Athletics's relief pitchers in close game situations."
+        },
+        {
+            "source": "Grok",
+            "text": "Minnesota Twins - Oakland Athletics: 3-2\n\nThe Minnesota Twins have been road warriors this season with impressive away statistics. Their offensive production has been significantly better than the Oakland Athletics's in the last 10 games."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Minnesota Twins - Oakland Athletics: 3-3\n\nBased on advanced metrics, the Minnesota Twins have a 56% chance to win despite playing away from home. Their road OPS and pitching matchup advantages are significant factors in this prediction."
+        }
+    ],
+    "nym-lad": [
+        {
+            "source": "OpenAI",
+            "text": "New York Mets - Los Angeles Dodgers: 1-4\n\nThe Los Angeles Dodgers have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the New York Mets's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "New York Mets - Los Angeles Dodgers: 3-6\n\nAfter analyzing both teams' strengths and weaknesses, the Los Angeles Dodgers appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the New York Mets in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "New York Mets - Los Angeles Dodgers: 1-3\n\nLooking at the batting averages and bullpen ERA, the Los Angeles Dodgers have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Los Angeles Dodgers Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "New York Mets - Los Angeles Dodgers: 1-4\n\nStatistical analysis indicates the Los Angeles Dodgers have a 51% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
         }
     ]
 };
