@@ -12,8 +12,8 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
-const LLMPredictionService = require('./llm-integration/llm-prediction-service');
-const MongoDBService = require('./llm-integration/mongodb-service');
+const LLMPredictionService = require('./llm-prediction-service');
+const MongoDBService = require('./mongodb-service');
 require('dotenv').config();
 
 // Constants
