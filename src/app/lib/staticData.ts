@@ -1,6 +1,7 @@
 export const staticGames = [
   {
     "id": "1",
+    "sport": "MLB",
     "homeTeam": {
       "name": "Arizona Diamondbacks",
       "abbreviation": "ARI",
@@ -24,6 +25,7 @@ export const staticGames = [
   },
   {
     "id": "2",
+    "sport": "MLB",
     "homeTeam": {
       "name": "Seattle Mariners",
       "abbreviation": "SEA",
@@ -47,6 +49,7 @@ export const staticGames = [
   },
   {
     "id": "3",
+    "sport": "MLB",
     "homeTeam": {
       "name": "San Diego Padres",
       "abbreviation": "SD",
@@ -70,6 +73,7 @@ export const staticGames = [
   },
   {
     "id": "4",
+    "sport": "MLB",
     "homeTeam": {
       "name": "Los Angeles Dodgers",
       "abbreviation": "LAD",

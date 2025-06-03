@@ -14,6 +14,8 @@ export interface Predictions {
 
 export interface Game {
   id: string;
+  /** The sport this game belongs to (e.g. MLB, NBA). */
+  sport?: string;
   homeTeam: Team;
   awayTeam: Team;
   gameTime: string;

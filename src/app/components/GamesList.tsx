@@ -6,12 +6,13 @@ import GameCard from './GameCard';
 
 interface GamesListProps {
   games: Game[];
+  sport?: string;
 }
 
-const GamesList: React.FC<GamesListProps> = ({ games }) => {
+const GamesList: React.FC<GamesListProps> = ({ games, sport = 'MLB' }) => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Today&apos;s MLB Games</h1>
+      <h1 className="text-3xl font-bold mb-6">Today&apos;s {sport} Games</h1>
       
       <p className="text-gray-700 mb-8">
         View predictions from multiple AI models for upcoming baseball games.

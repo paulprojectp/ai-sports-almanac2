@@ -6,7 +6,7 @@ import GamesList from './components/GamesList';
 export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50">
-      <GamesList games={staticGames} />
+      <GamesList games={staticGames} sport="MLB" />
     </main>
   );
 }
