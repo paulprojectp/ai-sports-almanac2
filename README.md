@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Sports Almanac
 
-## Getting Started
+This project collects the current slate of MLB games from [Dratings.com](https://www.dratings.com/predictor/mlb-baseball-predictions/),
+sends the matchups to four different LLM providers, stores the predictions in MongoDB and
+updates `index.html` with the latest results.  A GitHub Action runs the process every
+six hours so the site stays up to date.
 
-First, run the development server:
+## Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Create a `.env` file in the repository root (or copy from `.env.example`) and populate
+these variables:
+
+```
+OPENAI_API_KEY=your_openai_key
+ANTHROPIC_API_KEY=your_anthropic_key
+GROK_API_KEY=your_grok_key
+DEEPSEEK_API_KEY=your_deepseek_key
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net
+MONGODB_DB_NAME=ai-sports-almanac
+DATA_SOURCE_URL=https://www.dratings.com/predictor/mlb-baseball-predictions/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`MONGODB_DB_NAME` controls which database the predictions are stored in.  The default
+is `ai-sports-almanac` if the variable is omitted.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Running locally
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Install dependencies and run the prediction script:
 
-## Learn More
+```bash
+npm install
+node scripts/llm-integration/fetch-and-predict.js
+```
 
-To learn more about Next.js, take a look at the following resources:
+The script fetches games, queries the LLMs, writes predictions to MongoDB and updates
+`index.html`.  Open the file in your browser to view the results.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Automation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The workflow defined in `.github/workflows/update-predictions.yml` populates the
+environment from GitHub secrets, runs the script and commits the updated HTML every
+six hours.  Push changes to the repository and GitHub Pages will serve the latest
+predictions.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.  See the [LICENSE](LICENSE) file for
+details.

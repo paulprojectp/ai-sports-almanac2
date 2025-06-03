@@ -26,7 +26,8 @@ GROK_API_KEY=your_grok_api_key
 DEEPSEEK_API_KEY=your_deepseek_api_key
 
 # MongoDB Connection
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/ai-sports-almanac
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net
+MONGODB_DB_NAME=ai-sports-almanac
 
 # Data Source URL
 DATA_SOURCE_URL=https://www.dratings.com/predictor/mlb-baseball-predictions/
