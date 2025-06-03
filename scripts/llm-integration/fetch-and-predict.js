@@ -205,8 +205,9 @@ async function scrapeMLBData() {
             const homeTeam = parseTeamName(homeTeamName);
             
             // Create game object
+            const slug = `${awayTeam.abbreviation.toLowerCase()}-${homeTeam.abbreviation.toLowerCase()}`;
             const game = {
-              id: String(games.length + 1),
+              id: slug,
               homeTeam: {
                 name: homeTeam.fullName,
                 abbreviation: homeTeam.abbreviation,
@@ -236,7 +237,7 @@ async function scrapeMLBData() {
       // Create games based on the screenshot provided by the user
       const manualGames = [
         {
-          id: "1",
+          id: "wsh-ari",
           homeTeam: {
             name: "Arizona Diamondbacks",
             abbreviation: "ARI",
@@ -253,7 +254,7 @@ async function scrapeMLBData() {
           venue: "Chase Field, Phoenix, AZ"
         },
         {
-          id: "2",
+          id: "min-sea",
           homeTeam: {
             name: "Seattle Mariners",
             abbreviation: "SEA",
@@ -270,7 +271,7 @@ async function scrapeMLBData() {
           venue: "T-Mobile Park, Seattle, WA"
         },
         {
-          id: "3",
+          id: "pit-sd",
           homeTeam: {
             name: "San Diego Padres",
             abbreviation: "SD",
@@ -287,7 +288,7 @@ async function scrapeMLBData() {
           venue: "Petco Park, San Diego, CA"
         },
         {
-          id: "4",
+          id: "nyy-lad",
           homeTeam: {
             name: "Los Angeles Dodgers",
             abbreviation: "LAD",
@@ -319,7 +320,7 @@ async function scrapeMLBData() {
     // Create games based on the screenshot provided by the user
     const manualGames = [
       {
-        id: "1",
+        id: "wsh-ari",
         homeTeam: {
           name: "Arizona Diamondbacks",
           abbreviation: "ARI",
@@ -336,7 +337,7 @@ async function scrapeMLBData() {
         venue: "Chase Field, Phoenix, AZ"
       },
       {
-        id: "2",
+        id: "min-sea",
         homeTeam: {
           name: "Seattle Mariners",
           abbreviation: "SEA",
@@ -353,7 +354,7 @@ async function scrapeMLBData() {
         venue: "T-Mobile Park, Seattle, WA"
       },
       {
-        id: "3",
+        id: "pit-sd",
         homeTeam: {
           name: "San Diego Padres",
           abbreviation: "SD",
@@ -370,7 +371,7 @@ async function scrapeMLBData() {
         venue: "Petco Park, San Diego, CA"
       },
       {
-        id: "4",
+        id: "nyy-lad",
         homeTeam: {
           name: "Los Angeles Dodgers",
           abbreviation: "LAD",
@@ -410,25 +411,40 @@ async function updateHtmlWithPredictions(games) {
       updatedHtml = updatedHtml.replace(/<head>/, `<head>\n  <!-- Last updated: ${timestamp} -->`);
     }
     
-    // For each game, update the predictions in the HTML
+    // Build game data object for the page
+    const gamesObj = {};
+    const predictionsObj = {};
+
     for (const game of games) {
-      const { id, predictions } = game;
-      
-      if (predictions) {
-        // Create regex patterns to find and replace each prediction
-        const openaiPattern = new RegExp(`(data-game-id="${id}"[^>]*data-provider="openai"[^>]*>)[^<]*(</div>)`, 'g');
-        const anthropicPattern = new RegExp(`(data-game-id="${id}"[^>]*data-provider="anthropic"[^>]*>)[^<]*(</div>)`, 'g');
-        const grokPattern = new RegExp(`(data-game-id="${id}"[^>]*data-provider="grok"[^>]*>)[^<]*(</div>)`, 'g');
-        const deepseekPattern = new RegExp(`(data-game-id="${id}"[^>]*data-provider="deepseek"[^>]*>)[^<]*(</div>)`, 'g');
-        
-        // Replace each prediction in the HTML
-        updatedHtml = updatedHtml
-          .replace(openaiPattern, `$1${predictions.openai ? predictions.openai.replace(/\n/g, '<br>') : "Prediction unavailable at this time."}$2`)
-          .replace(anthropicPattern, `$1${predictions.anthropic ? predictions.anthropic.replace(/\n/g, '<br>') : "Prediction unavailable at this time."}$2`)
-          .replace(grokPattern, `$1${predictions.grok ? predictions.grok.replace(/\n/g, '<br>') : "Prediction unavailable at this time."}$2`)
-          .replace(deepseekPattern, `$1${predictions.deepseek ? predictions.deepseek.replace(/\n/g, '<br>') : "Prediction unavailable at this time."}$2`);
-      }
+      const { id, homeTeam, awayTeam, gameTime, venue, predictions } = game;
+
+      const date = new Date(gameTime);
+      const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'America/New_York' }) + ' EDT';
+
+      gamesObj[id] = {
+        away: { team: awayTeam.name, abbr: awayTeam.abbreviation, record: awayTeam.record },
+        home: { team: homeTeam.name, abbr: homeTeam.abbreviation, record: homeTeam.record },
+        time: timeStr,
+        date: dateStr,
+        venue
+      };
+
+      predictionsObj[id] = [
+        { source: 'OpenAI', text: predictions.openai },
+        { source: 'Anthropic', text: predictions.anthropic },
+        { source: 'Grok', text: predictions.grok },
+        { source: 'DeepSeek', text: predictions.deepseek }
+      ];
     }
+
+    // Replace game data
+    const gamesPattern = /const GAMES = [^;]*;/s;
+    updatedHtml = updatedHtml.replace(gamesPattern, `const GAMES = ${JSON.stringify(gamesObj, null, 4)};`);
+
+    // Replace fallback predictions
+    const predPattern = /const FALLBACK_PREDICTIONS = [^;]*;/s;
+    updatedHtml = updatedHtml.replace(predPattern, `const FALLBACK_PREDICTIONS = ${JSON.stringify(predictionsObj, null, 4)};`);
     
     // Write the updated HTML back to the file
     fs.writeFileSync(STATIC_DATA_PATH, updatedHtml);
