@@ -10,21 +10,22 @@ on:
 jobs:
   update-predictions:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
+      
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
-
+      
       - name: Install dependencies
         run: npm install axios cheerio dotenv mongodb
-
+      
       - name: Create .env file
         run: |
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > .env
@@ -33,18 +34,18 @@ jobs:
           echo "DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}" >> .env
           echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
           echo "DATA_SOURCE_URL=https://www.dratings.com/predictor/mlb-baseball-predictions/" >> .env
-
+      
       - name: Run prediction script
         run: node scripts/llm-integration/fetch-and-predict.js
-
+      
       - name: Configure Git
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-
+      
       - name: Commit and push changes
         run: |
-          git add index.html
+          git add .
           git commit -m "Update predictions via GitHub Action" || echo "No changes to commit"
           git push
         env:
