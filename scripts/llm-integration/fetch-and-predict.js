@@ -162,7 +162,8 @@ async function scrapeMLBData() {
           console.log(`  Teams: ${teamsText}`);
           
           // Parse date and time (format: "06/01/202508:10 PM")
-          const dateMatch = timeText.match(/(\d{2})\/(\d{2})\/(\d{4})(\d{2}):(\d{2})\s*([AP]M)/i);
+          // Allow optional space between the date and time
+          const dateMatch = timeText.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{2}):(\d{2})\s*([AP]M)/i);
           let gameTime = '';
           
           if (dateMatch) {
@@ -172,8 +173,10 @@ async function scrapeMLBData() {
             const hour = dateMatch[4];
             const minute = dateMatch[5];
             const ampm = dateMatch[6];
-            
-            gameTime = `${year}-${month}-${day}T${hour}:${minute}:00 ${ampm}`;
+
+            // Convert to ISO string in Eastern Time so Date parsing works
+            const parsedDate = new Date(`${month}/${day}/${year} ${hour}:${minute} ${ampm} ET`);
+            gameTime = parsedDate.toISOString();
             console.log(`  Parsed time: ${gameTime}`);
           } else {
             gameTime = '2025-06-01T12:00:00';
