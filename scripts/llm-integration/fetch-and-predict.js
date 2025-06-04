@@ -114,6 +114,19 @@ function parseTeamName(name) {
   };
 }
 
+// Parse a date/time string in Eastern Time and return ISO string in UTC
+function parseEasternTimeToISO(month, day, year, hour, minute, ampm) {
+  const midDay = new Date(Date.UTC(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10), 12));
+  const tzName = midDay
+    .toLocaleString('en-US', { timeZone: 'America/New_York', timeZoneName: 'short' })
+    .split(' ') 
+    .pop();
+  const offset = tzName === 'EDT' ? '-04:00' : '-05:00';
+  const dateStr = `${month}/${day}/${year} ${hour}:${minute} ${ampm} ${offset}`;
+  const d = new Date(dateStr);
+  return d.toISOString();
+}
+
 // Save HTML for debugging
 function saveHtmlForDebugging(html) {
   const debugPath = path.join(__dirname, 'dratings_debug.html');
@@ -174,9 +187,8 @@ async function scrapeMLBData() {
             const minute = dateMatch[5];
             const ampm = dateMatch[6];
 
-            // Convert to ISO string in Eastern Time so Date parsing works
-            const parsedDate = new Date(`${month}/${day}/${year} ${hour}:${minute} ${ampm} ET`);
-            gameTime = parsedDate.toISOString();
+            // Convert to ISO string using Eastern Time offset
+            gameTime = parseEasternTimeToISO(month, day, year, hour, minute, ampm);
             console.log(`  Parsed time: ${gameTime}`);
           } else {
             gameTime = '2025-06-01T12:00:00';
