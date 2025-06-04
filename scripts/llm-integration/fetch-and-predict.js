@@ -549,12 +549,17 @@ async function main() {
       try {
         // Get predictions from all LLM providers
         const predictions = await llmService.getAllPredictions(game);
-        
+
         // Only update predictions that were successfully retrieved
         if (predictions.openai) game.predictions.openai = predictions.openai;
         if (predictions.anthropic) game.predictions.anthropic = predictions.anthropic;
         if (predictions.grok) game.predictions.grok = predictions.grok;
         if (predictions.deepseek) game.predictions.deepseek = predictions.deepseek;
+
+        const anySuccess = Object.values(predictions.success || {}).some(v => v);
+        if (!anySuccess) {
+          throw new Error('All LLM API calls failed');
+        }
         
         // Store predictions in MongoDB if connected
         if (mongoConnected) {
@@ -572,6 +577,7 @@ async function main() {
       } catch (error) {
         console.warn(`Error generating predictions for game ${game.id}:`, error.message);
         console.log(`Using fallback predictions for game ${game.id}`);
+        throw error;
       }
     }
     
@@ -607,6 +613,7 @@ async function main() {
     } catch (htmlError) {
       console.error('Failed to update HTML with timestamp:', htmlError);
     }
+    process.exit(1);
   }
 }
 
