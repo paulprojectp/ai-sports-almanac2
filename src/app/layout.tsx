@@ -1,4 +1,4 @@
-import '../env.js';
+import './env.js';
 export const metadata = {
   title: 'AI Sports Almanac',
   description: 'AI-powered sports predictions',
