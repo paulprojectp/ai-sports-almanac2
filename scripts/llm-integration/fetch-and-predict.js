@@ -259,83 +259,10 @@ async function scrapeMLBData() {
       });
     }
     
-    // If no games found, create manual games based on the screenshot
+    // If no games were scraped, return an empty array
     if (games.length === 0) {
-      console.log('No games found through scraping, creating manual games based on screenshot data');
-      
-      // Create games based on the screenshot provided by the user
-      const manualGames = [
-        {
-          id: "wsh-ari",
-          homeTeam: {
-            name: "Arizona Diamondbacks",
-            abbreviation: "ARI",
-            logo: "/team-logos/ari_logo.svg",
-            record: "27-31"
-          },
-          awayTeam: {
-            name: "Washington Nationals",
-            abbreviation: "WSH",
-            logo: "/team-logos/wsh_logo.svg",
-            record: "28-30"
-          },
-          gameTime: "2025-06-01T04:10:00",
-          venue: "Chase Field, Phoenix, AZ"
-        },
-        {
-          id: "min-sea",
-          homeTeam: {
-            name: "Seattle Mariners",
-            abbreviation: "SEA",
-            logo: "/team-logos/sea_logo.svg",
-            record: "31-26"
-          },
-          awayTeam: {
-            name: "Minnesota Twins",
-            abbreviation: "MIN",
-            logo: "/team-logos/min_logo.svg",
-            record: "31-26"
-          },
-          gameTime: "2025-06-01T04:10:00",
-          venue: "T-Mobile Park, Seattle, WA"
-        },
-        {
-          id: "pit-sd",
-          homeTeam: {
-            name: "San Diego Padres",
-            abbreviation: "SD",
-            logo: "/team-logos/sd_logo.svg",
-            record: "32-24"
-          },
-          awayTeam: {
-            name: "Pittsburgh Pirates",
-            abbreviation: "PIT",
-            logo: "/team-logos/pit_logo.svg",
-            record: "22-37"
-          },
-          gameTime: "2025-06-01T05:10:00",
-          venue: "Petco Park, San Diego, CA"
-        },
-        {
-          id: "nyy-lad",
-          homeTeam: {
-            name: "Los Angeles Dodgers",
-            abbreviation: "LAD",
-            logo: "/team-logos/lad_logo.svg",
-            record: "36-22"
-          },
-          awayTeam: {
-            name: "New York Yankees",
-            abbreviation: "NYY",
-            logo: "/team-logos/nyy_logo.svg",
-            record: "35-22"
-          },
-          gameTime: "2025-06-01T07:10:00",
-          venue: "Dodger Stadium, Los Angeles, CA"
-        }
-      ];
-      
-      return manualGames;
+      console.warn("No games found when scraping Dratings.");
+      return [];
     }
     
     console.log(`Found ${games.length} upcoming MLB games`);
@@ -343,82 +270,9 @@ async function scrapeMLBData() {
   } catch (error) {
     console.error('Error scraping MLB data:', error);
     
-    // Fallback to manual games if scraping fails
-    console.log('Scraping failed, using manual games based on screenshot data');
-    
-    // Create games based on the screenshot provided by the user
-    const manualGames = [
-      {
-        id: "wsh-ari",
-        homeTeam: {
-          name: "Arizona Diamondbacks",
-          abbreviation: "ARI",
-          logo: "/team-logos/ari_logo.svg",
-          record: "27-31"
-        },
-        awayTeam: {
-          name: "Washington Nationals",
-          abbreviation: "WSH",
-          logo: "/team-logos/wsh_logo.svg",
-          record: "28-30"
-        },
-        gameTime: "2025-06-01T04:10:00",
-        venue: "Chase Field, Phoenix, AZ"
-      },
-      {
-        id: "min-sea",
-        homeTeam: {
-          name: "Seattle Mariners",
-          abbreviation: "SEA",
-          logo: "/team-logos/sea_logo.svg",
-          record: "31-26"
-        },
-        awayTeam: {
-          name: "Minnesota Twins",
-          abbreviation: "MIN",
-          logo: "/team-logos/min_logo.svg",
-          record: "31-26"
-        },
-        gameTime: "2025-06-01T04:10:00",
-        venue: "T-Mobile Park, Seattle, WA"
-      },
-      {
-        id: "pit-sd",
-        homeTeam: {
-          name: "San Diego Padres",
-          abbreviation: "SD",
-          logo: "/team-logos/sd_logo.svg",
-          record: "32-24"
-        },
-        awayTeam: {
-          name: "Pittsburgh Pirates",
-          abbreviation: "PIT",
-          logo: "/team-logos/pit_logo.svg",
-          record: "22-37"
-        },
-        gameTime: "2025-06-01T05:10:00",
-        venue: "Petco Park, San Diego, CA"
-      },
-      {
-        id: "nyy-lad",
-        homeTeam: {
-          name: "Los Angeles Dodgers",
-          abbreviation: "LAD",
-          logo: "/team-logos/lad_logo.svg",
-          record: "36-22"
-        },
-        awayTeam: {
-          name: "New York Yankees",
-          abbreviation: "NYY",
-          logo: "/team-logos/nyy_logo.svg",
-          record: "35-22"
-        },
-        gameTime: "2025-06-01T07:10:00",
-        venue: "Dodger Stadium, Los Angeles, CA"
-      }
-    ];
-    
-    return manualGames;
+    // Scraping failed so no games could be updated
+    console.warn("Failed to scrape Dratings; no games updated.");
+    return [];
   }
 }
 
