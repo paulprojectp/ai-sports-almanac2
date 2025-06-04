@@ -12,6 +12,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 const LLMPredictionService = require('./llm-prediction-service');
 const MongoDBService = require('./mongodb-service');
 require('dotenv').config();
@@ -126,9 +127,21 @@ async function scrapeMLBData() {
   console.log('Fetching MLB data from Dratings.com...');
   
   try {
-    // Fetch the HTML content
-    const response = await axios.get(DATA_SOURCE_URL);
-    const html = response.data;
+    // Fetch the HTML content using curl through the environment proxy
+    let html;
+    try {
+      html = execSync(`curl -Ls ${DATA_SOURCE_URL}`, { encoding: 'utf8' });
+    } catch (curlErr) {
+      console.warn('curl fetch failed, falling back to axios:', curlErr.message);
+      const response = await axios.get(DATA_SOURCE_URL, {
+        maxRedirects: 10,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Node.js)',
+          'Accept-Language': 'en-US,en;q=0.9'
+        }
+      });
+      html = response.data;
+    }
     
     // Save HTML for debugging
     saveHtmlForDebugging(html);
@@ -161,9 +174,12 @@ async function scrapeMLBData() {
           console.log(`  Time: ${timeText}`);
           console.log(`  Teams: ${teamsText}`);
           
-          // Parse date and time (format: "06/01/202508:10 PM")
+          // Parse date and time (format: "06/01/2025 08:10 PM" or "06/01/2025 08:10 PM ET")
+          // Remove any trailing timezone like "ET" or "EST" so Date.parse works reliably
+          const cleanTimeText = timeText.replace(/\b(ET|EST|EDT)\b/i, '').trim();
+
           // Allow optional space between the date and time
-          const dateMatch = timeText.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{2}):(\d{2})\s*([AP]M)/i);
+          const dateMatch = cleanTimeText.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{1,2}):(\d{2})\s*([AP]M)/i);
           let gameTime = '';
           
           if (dateMatch) {
@@ -174,8 +190,8 @@ async function scrapeMLBData() {
             const minute = dateMatch[5];
             const ampm = dateMatch[6];
 
-            // Convert to ISO string in Eastern Time so Date parsing works
-            const parsedDate = new Date(`${month}/${day}/${year} ${hour}:${minute} ${ampm} ET`);
+            // Parse date without timezone; the container runs in UTC
+            const parsedDate = new Date(`${month}/${day}/${year} ${hour}:${minute} ${ampm}`);
             gameTime = parsedDate.toISOString();
             console.log(`  Parsed time: ${gameTime}`);
           } else {
