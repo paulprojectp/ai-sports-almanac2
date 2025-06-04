@@ -35,6 +35,8 @@ function parseTeamName(name) {
   const teamAbbreviations = {
     'Arizona': 'ARI',
     'Arizona Diamondbacks': 'ARI',
+    "Arizona D'Backs": 'ARI',
+    'Arizona D-backs': 'ARI',
     'Atlanta': 'ATL',
     'Atlanta Braves': 'ATL',
     'Baltimore': 'BAL',
@@ -43,6 +45,7 @@ function parseTeamName(name) {
     'Boston Red Sox': 'BOS',
     'Chicago Cubs': 'CHC',
     'Chicago White Sox': 'CWS',
+    'Chi White Sox': 'CWS',
     'Cincinnati': 'CIN',
     'Cincinnati Reds': 'CIN',
     'Cleveland': 'CLE',
@@ -56,7 +59,9 @@ function parseTeamName(name) {
     'Kansas City': 'KC',
     'Kansas City Royals': 'KC',
     'Los Angeles Angels': 'LAA',
+    'LA Angels': 'LAA',
     'Los Angeles Dodgers': 'LAD',
+    'LA Dodgers': 'LAD',
     'Miami': 'MIA',
     'Miami Marlins': 'MIA',
     'Milwaukee': 'MIL',
@@ -174,11 +179,12 @@ async function scrapeMLBData() {
           console.log(`  Time: ${timeText}`);
           console.log(`  Teams: ${teamsText}`);
           
-          // Parse date and time (format: "06/01/202508:10 PM")
-          // Allow optional space between the date and time
-          const dateMatch = timeText.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{2}):(\d{2})\s*([AP]M)/i);
+          // Parse date and time. Formats on Dratings sometimes omit a leading zero
+          // for the hour (e.g. "06/01/2025 8:10 PM"). Allow 1-2 digits for the
+          // hour and optional whitespace between the date and time.
+          const dateMatch = timeText.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{1,2}):(\d{2})\s*([AP]M)/i);
           let gameTime = '';
-          
+
           if (dateMatch) {
             const month = dateMatch[1];
             const day = dateMatch[2];
@@ -191,7 +197,15 @@ async function scrapeMLBData() {
             gameTime = parseEasternTimeToISO(month, day, year, hour, minute, ampm);
             console.log(`  Parsed time: ${gameTime}`);
           } else {
-            gameTime = '2025-06-01T12:00:00';
+            console.warn(`  Failed to parse time string "${timeText}", using noon ET as fallback`);
+            // Fallback to noon Eastern on the reported day to avoid invalid dates
+            const parts = timeText.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if (parts) {
+              gameTime = parseEasternTimeToISO(parts[1], parts[2], parts[3], '12', '00', 'PM');
+            } else {
+              // Absolute fallback if even the date could not be parsed
+              gameTime = new Date().toISOString();
+            }
           }
           
           // Parse teams (format: "Washington Nationals (28-30)Arizona Diamondbacks (27-31)")
