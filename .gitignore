@@ -7,6 +7,9 @@
 # Node modules
 node_modules/
 
+# Build output
+out/
+
 # Logs
 *.log
 
