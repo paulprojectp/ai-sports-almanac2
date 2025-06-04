@@ -14,7 +14,7 @@ class LLMPredictionService {
       openai: apiKeys.openai || process.env.OPENAI_API_KEY,
       anthropic: apiKeys.anthropic || process.env.ANTHROPIC_API_KEY,
       grok: apiKeys.grok || process.env.GROK_API_KEY,
-      deepseek: apiKeys.deepseek || process.env.DEEPSEEK_API_KEY
+      deepseek: apiKeys.deepseek || process.env.DEEPSEEK_API_KEY,
     };
   }
 
@@ -30,10 +30,12 @@ class LLMPredictionService {
         return await fn();
       } catch (error) {
         const status = error.response?.status;
+        const url = error.config?.url;
+        console.warn(`Request to ${url} failed with status ${status}: ${error.message}`);
         // Retry on rate limiting or server errors
         if (attempt < retries - 1 && (status === 429 || (status >= 500 && status < 600))) {
-          console.warn(`Request failed with status ${status}, retrying in ${delay}ms...`);
-          await new Promise(res => setTimeout(res, delay));
+          console.warn(`Retrying in ${delay}ms (attempt ${attempt + 1} of ${retries})...`);
+          await new Promise((res) => setTimeout(res, delay));
           delay *= 2; // exponential backoff
         } else {
           throw error;
@@ -70,12 +72,12 @@ Keep your explanation concise and focus only on this specific game.`;
   /**
    * Get a prediction from OpenAI
    * @param {Object} game - Game data object
-   * @returns {Promise<String>} - Prediction text
+   * @returns {Promise<{prediction: String, success: boolean}>} - Prediction result
    */
   async getOpenAIPrediction(game) {
     if (!this.apiKeys.openai) {
       console.log('OpenAI API key not found, using fallback prediction');
-      return this.getFallbackPrediction('openai', game);
+      return { prediction: this.getFallbackPrediction('openai', game), success: false };
     }
 
     try {
@@ -101,10 +103,10 @@ Keep your explanation concise and focus only on this specific game.`;
         }
       ));
 
-      return response.data.choices[0].message.content.trim();
+      return { prediction: response.data.choices[0].message.content.trim(), success: true };
     } catch (error) {
       console.error('OpenAI API error:', error.message);
-      return this.getFallbackPrediction('openai', game);
+      return { prediction: this.getFallbackPrediction('openai', game), success: false };
     }
   }
 
@@ -116,7 +118,7 @@ Keep your explanation concise and focus only on this specific game.`;
   async getAnthropicPrediction(game) {
     if (!this.apiKeys.anthropic) {
       console.log('Anthropic API key not found, using fallback prediction');
-      return this.getFallbackPrediction('anthropic', game);
+      return { prediction: this.getFallbackPrediction('anthropic', game), success: false };
     }
 
     try {
@@ -141,10 +143,10 @@ Keep your explanation concise and focus only on this specific game.`;
         }
       ));
 
-      return response.data.content[0].text.trim();
+      return { prediction: response.data.content[0].text.trim(), success: true };
     } catch (error) {
       console.error('Anthropic API error:', error.message);
-      return this.getFallbackPrediction('anthropic', game);
+      return { prediction: this.getFallbackPrediction('anthropic', game), success: false };
     }
   }
 
@@ -156,7 +158,7 @@ Keep your explanation concise and focus only on this specific game.`;
   async getGrokPrediction(game) {
     if (!this.apiKeys.grok) {
       console.log('Grok API key not found, using fallback prediction');
-      return this.getFallbackPrediction('grok', game);
+      return { prediction: this.getFallbackPrediction('grok', game), success: false };
     }
 
     try {
@@ -183,10 +185,10 @@ Keep your explanation concise and focus only on this specific game.`;
         }
       ));
 
-      return response.data.choices[0].message.content.trim();
+      return { prediction: response.data.choices[0].message.content.trim(), success: true };
     } catch (error) {
       console.error('Grok API error:', error.message);
-      return this.getFallbackPrediction('grok', game);
+      return { prediction: this.getFallbackPrediction('grok', game), success: false };
     }
   }
 
@@ -198,7 +200,7 @@ Keep your explanation concise and focus only on this specific game.`;
   async getDeepSeekPrediction(game) {
     if (!this.apiKeys.deepseek) {
       console.log('DeepSeek API key not found, using fallback prediction');
-      return this.getFallbackPrediction('deepseek', game);
+      return { prediction: this.getFallbackPrediction('deepseek', game), success: false };
     }
 
     try {
@@ -224,10 +226,10 @@ Keep your explanation concise and focus only on this specific game.`;
         }
       ));
 
-      return response.data.choices[0].message.content.trim();
+      return { prediction: response.data.choices[0].message.content.trim(), success: true };
     } catch (error) {
       console.error('DeepSeek API error:', error.message);
-      return this.getFallbackPrediction('deepseek', game);
+      return { prediction: this.getFallbackPrediction('deepseek', game), success: false };
     }
   }
 
@@ -338,11 +340,11 @@ Keep your explanation concise and focus only on this specific game.`;
           return await this.getDeepSeekPrediction(game);
         default:
           console.error(`Unknown provider: ${provider}`);
-          return this.getFallbackPrediction('default', game);
+          return { prediction: this.getFallbackPrediction('default', game), success: false };
       }
     } catch (error) {
       console.error(`Error getting ${provider} prediction:`, error.message);
-      return this.getFallbackPrediction(provider, game);
+      return { prediction: this.getFallbackPrediction(provider, game), success: false };
     }
   }
 
@@ -355,30 +357,36 @@ Keep your explanation concise and focus only on this specific game.`;
     try {
       // Run all API calls in parallel for efficiency
       const [openai, anthropic, grok, deepseek] = await Promise.all([
-        this.getOpenAIPrediction(game).catch(err => {
+        this.getOpenAIPrediction(game).catch((err) => {
           console.error('OpenAI prediction failed:', err.message);
-          return this.getFallbackPrediction('openai', game);
+          return { prediction: this.getFallbackPrediction('openai', game), success: false };
         }),
-        this.getAnthropicPrediction(game).catch(err => {
+        this.getAnthropicPrediction(game).catch((err) => {
           console.error('Anthropic prediction failed:', err.message);
-          return this.getFallbackPrediction('anthropic', game);
+          return { prediction: this.getFallbackPrediction('anthropic', game), success: false };
         }),
-        this.getGrokPrediction(game).catch(err => {
+        this.getGrokPrediction(game).catch((err) => {
           console.error('Grok prediction failed:', err.message);
-          return this.getFallbackPrediction('grok', game);
+          return { prediction: this.getFallbackPrediction('grok', game), success: false };
         }),
-        this.getDeepSeekPrediction(game).catch(err => {
+        this.getDeepSeekPrediction(game).catch((err) => {
           console.error('DeepSeek prediction failed:', err.message);
-          return this.getFallbackPrediction('deepseek', game);
-        })
+          return { prediction: this.getFallbackPrediction('deepseek', game), success: false };
+        }),
       ]);
-      
+
       return {
-        openai,
-        anthropic,
-        grok,
-        deepseek,
-        timestamp: new Date().toISOString()
+        openai: openai.prediction,
+        anthropic: anthropic.prediction,
+        grok: grok.prediction,
+        deepseek: deepseek.prediction,
+        success: {
+          openai: openai.success,
+          anthropic: anthropic.success,
+          grok: grok.success,
+          deepseek: deepseek.success,
+        },
+        timestamp: new Date().toISOString(),
       };
     } catch (error) {
       console.error('Error getting predictions:', error);
@@ -388,8 +396,14 @@ Keep your explanation concise and focus only on this specific game.`;
         anthropic: this.getFallbackPrediction('anthropic', game),
         grok: this.getFallbackPrediction('grok', game),
         deepseek: this.getFallbackPrediction('deepseek', game),
+        success: {
+          openai: false,
+          anthropic: false,
+          grok: false,
+          deepseek: false,
+        },
         timestamp: new Date().toISOString(),
-        error: error.message
+        error: error.message,
       };
     }
   }
