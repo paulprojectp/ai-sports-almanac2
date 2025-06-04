@@ -23,7 +23,7 @@ DATA_SOURCE_URL=https://www.dratings.com/predictor/mlb-baseball-predictions/
 `MONGODB_DB_NAME` controls which database the predictions are stored in.  The default
 is `ai-sports-almanac` if the variable is omitted.
 
-The prediction service and the demo page both use OpenAI's `gpt-3.5-turbo` model for consistency.
+The prediction service and the demo page both use OpenAI's `gpt-4o` model for consistency.
 
 ## Running locally
 

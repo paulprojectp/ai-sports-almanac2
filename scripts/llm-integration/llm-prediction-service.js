@@ -60,7 +60,7 @@ Keep your explanation concise and focus only on this specific game.`;
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
         {
-          model: 'gpt-3.5-turbo',
+          model: 'gpt-4o',
           messages: [
             { role: 'system', content: 'You are a sports prediction AI specializing in MLB baseball.' },
             { role: 'user', content: prompt }
@@ -101,7 +101,7 @@ Keep your explanation concise and focus only on this specific game.`;
       const response = await axios.post(
         'https://api.anthropic.com/v1/messages',
         {
-          model: 'claude-3-sonnet-20240229',
+          model: 'claude-3-5-sonnet-20241022',
           max_tokens: 150,
           messages: [
             { role: 'user', content: prompt }
@@ -138,9 +138,9 @@ Keep your explanation concise and focus only on this specific game.`;
     try {
       const prompt = this.generatePrompt(game);
       
-      // Note: This is a placeholder as Grok's API details may vary
+      // Updated endpoint for xAI's Grok API
       const response = await axios.post(
-        'https://api.grok.x/v1/chat/completions',
+        'https://api.x.ai/v1/chat/completions',
         {
           model: 'grok-1',
           messages: [
@@ -181,7 +181,7 @@ Keep your explanation concise and focus only on this specific game.`;
       const prompt = this.generatePrompt(game);
       
       const response = await axios.post(
-        'https://api.deepseek.com/v1/chat/completions',
+        'https://api.deepseek.com/chat/completions',
         {
           model: 'deepseek-chat',
           messages: [
