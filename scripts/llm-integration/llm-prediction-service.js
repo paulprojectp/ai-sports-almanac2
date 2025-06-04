@@ -19,6 +19,30 @@ class LLMPredictionService {
   }
 
   /**
+   * Helper to retry a request when rate limited or server errors occur
+   * @param {Function} fn - async function that performs the request
+   * @param {number} retries - number of retry attempts
+   * @param {number} delay - initial delay in ms
+   */
+  async requestWithRetry(fn, retries = 3, delay = 1000) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        return await fn();
+      } catch (error) {
+        const status = error.response?.status;
+        // Retry on rate limiting or server errors
+        if (attempt < retries - 1 && (status === 429 || (status >= 500 && status < 600))) {
+          console.warn(`Request failed with status ${status}, retrying in ${delay}ms...`);
+          await new Promise(res => setTimeout(res, delay));
+          delay *= 2; // exponential backoff
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
+  /**
    * Generate a prediction prompt for a specific game
    * @param {Object} game - Game data object
    * @returns {String} - Formatted prompt for LLM
@@ -57,7 +81,7 @@ Keep your explanation concise and focus only on this specific game.`;
     try {
       const prompt = this.generatePrompt(game);
       
-      const response = await axios.post(
+      const response = await this.requestWithRetry(() => axios.post(
         'https://api.openai.com/v1/chat/completions',
         {
           model: 'gpt-4o',
@@ -75,7 +99,7 @@ Keep your explanation concise and focus only on this specific game.`;
           },
           timeout: 10000 // 10 second timeout
         }
-      );
+      ));
 
       return response.data.choices[0].message.content.trim();
     } catch (error) {
@@ -98,7 +122,7 @@ Keep your explanation concise and focus only on this specific game.`;
     try {
       const prompt = this.generatePrompt(game);
       
-      const response = await axios.post(
+      const response = await this.requestWithRetry(() => axios.post(
         'https://api.anthropic.com/v1/messages',
         {
           model: 'claude-3-5-sonnet-20241022',
@@ -115,7 +139,7 @@ Keep your explanation concise and focus only on this specific game.`;
           },
           timeout: 10000 // 10 second timeout
         }
-      );
+      ));
 
       return response.data.content[0].text.trim();
     } catch (error) {
@@ -139,7 +163,7 @@ Keep your explanation concise and focus only on this specific game.`;
       const prompt = this.generatePrompt(game);
       
       // Updated endpoint for xAI's Grok API
-      const response = await axios.post(
+      const response = await this.requestWithRetry(() => axios.post(
         'https://api.x.ai/v1/chat/completions',
         {
           model: 'grok-1',
@@ -157,7 +181,7 @@ Keep your explanation concise and focus only on this specific game.`;
           },
           timeout: 10000 // 10 second timeout
         }
-      );
+      ));
 
       return response.data.choices[0].message.content.trim();
     } catch (error) {
@@ -180,7 +204,7 @@ Keep your explanation concise and focus only on this specific game.`;
     try {
       const prompt = this.generatePrompt(game);
       
-      const response = await axios.post(
+      const response = await this.requestWithRetry(() => axios.post(
         'https://api.deepseek.com/chat/completions',
         {
           model: 'deepseek-chat',
@@ -198,7 +222,7 @@ Keep your explanation concise and focus only on this specific game.`;
           },
           timeout: 10000 // 10 second timeout
         }
-      );
+      ));
 
       return response.data.choices[0].message.content.trim();
     } catch (error) {
