@@ -422,8 +422,12 @@ async function loadGames(){
     const data = await res.json();
     renderGames(data);
   } catch(e){
-    document.getElementById('games').innerText='Failed to load games';
-    console.error(e);
+    console.error('Failed to load live games:', e);
+    const err=document.createElement('p');
+    err.style.color='red';
+    err.style.textAlign='center';
+    err.textContent='Failed to load live games.';
+    document.body.insertBefore(err, document.getElementById('games'));
   }
 }
 function renderGames(games){
