@@ -60,7 +60,7 @@ Keep your explanation concise and focus only on this specific game.`;
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
         {
-          model: 'gpt-4',
+          model: 'gpt-3.5-turbo',
           messages: [
             { role: 'system', content: 'You are a sports prediction AI specializing in MLB baseball.' },
             { role: 'user', content: prompt }
