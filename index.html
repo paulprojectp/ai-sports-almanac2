@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head>
-  <!-- Last updated: 2025-06-03T23:44:09.660Z -->
+  <!-- Last updated: 2025-06-04T02:51:41.780Z -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Sports Almanac</title>
@@ -366,27 +366,363 @@
             <div class="game-header">
                 <div class="team">
                     <div class="team-logo">
+                        <img src="team-logos/col_logo.svg" alt="Colorado Rockies logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">COL</div>
+                    <div class="team-record">10-50</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/mia_logo.svg" alt="Miami Marlins logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">MIA</div>
+                    <div class="team-record">23-35</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">Wed, Jun 4</div>
+                <div class="game-time">12:10 PM EDT</div>
+                <div class="game-venue">Miami Marlins Stadium</div>
+            </div>
+            <button class="predictions-button" data-game-id="col-mia" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-col-mia">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-header">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/mil_logo.svg" alt="Milwaukee Brewers logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">MIL</div>
+                    <div class="team-record">33-28</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/cin_logo.svg" alt="Cincinnati Reds logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">CIN</div>
+                    <div class="team-record">29-32</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">Wed, Jun 4</div>
+                <div class="game-time">12:40 PM EDT</div>
+                <div class="game-venue">Cincinnati Reds Stadium</div>
+            </div>
+            <button class="predictions-button" data-game-id="mil-cin" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-mil-cin">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-header">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/laa_logo.svg" alt="Los Angeles Angels logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">LAA</div>
+                    <div class="team-record">27-32</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/bos_logo.svg" alt="Boston Red Sox logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">BOS</div>
+                    <div class="team-record">29-33</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">Wed, Jun 4</div>
+                <div class="game-time">01:35 PM EDT</div>
+                <div class="game-venue">Boston Red Sox Stadium</div>
+            </div>
+            <button class="predictions-button" data-game-id="laa-bos" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-laa-bos">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-header">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/hou_logo.svg" alt="Houston Astros logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">HOU</div>
+                    <div class="team-record">32-27</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/pit_logo.svg" alt="Pittsburgh Pirates logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">PIT</div>
+                    <div class="team-record">22-38</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">Wed, Jun 4</div>
+                <div class="game-time">06:40 PM EDT</div>
+                <div class="game-venue">Pittsburgh Pirates Stadium</div>
+            </div>
+            <button class="predictions-button" data-game-id="hou-pit" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-hou-pit">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-header">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/chc_logo.svg" alt="Chicago Cubs logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">CHC</div>
+                    <div class="team-record">37-22</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
                         <img src="team-logos/wsh_logo.svg" alt="Washington Nationals logo" class="team-logo">
                     </div>
                     <div class="team-abbr">WSH</div>
-                    <div class="team-record">28-30</div>
+                    <div class="team-record">28-31</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">Wed, Jun 4</div>
+                <div class="game-time">06:45 PM EDT</div>
+                <div class="game-venue">Washington Nationals Stadium</div>
+            </div>
+            <button class="predictions-button" data-game-id="chc-wsh" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-chc-wsh">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-header">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/cle_logo.svg" alt="Cleveland Guardians logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">CLE</div>
+                    <div class="team-record">32-26</div>
                 </div>
                 <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/nyy_logo.svg" alt="New York Yankees logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">NYY</div>
+                    <div class="team-record">36-22</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">Wed, Jun 4</div>
+                <div class="game-time">07:05 PM EDT</div>
+                <div class="game-venue">New York Yankees Stadium</div>
+            </div>
+            <button class="predictions-button" data-game-id="cle-nyy" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-cle-nyy">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-header">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/phi_logo.svg" alt="Philadelphia Phillies logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">PHI</div>
+                    <div class="team-record">36-23</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/tor_logo.svg" alt="Toronto Blue Jays logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">TOR</div>
+                    <div class="team-record">31-28</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">Wed, Jun 4</div>
+                <div class="game-time">07:07 PM EDT</div>
+                <div class="game-venue">Toronto Blue Jays Stadium</div>
+            </div>
+            <button class="predictions-button" data-game-id="phi-tor" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-phi-tor">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-header">
                 <div class="team">
                     <div class="team-logo">
                         <img src="team-logos/ari_logo.svg" alt="Arizona Diamondbacks logo" class="team-logo">
                     </div>
                     <div class="team-abbr">ARI</div>
+                    <div class="team-record">28-31</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/atl_logo.svg" alt="Atlanta Braves logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">ATL</div>
                     <div class="team-record">27-31</div>
                 </div>
             </div>
             <div class="game-details">
-                <div class="game-time">Sun, Jun 1</div>
-                <div class="game-time">12:10 AM EDT</div>
-                <div class="game-venue">Chase Field, Phoenix, AZ</div>
+                <div class="game-time">Wed, Jun 4</div>
+                <div class="game-time">07:15 PM EDT</div>
+                <div class="game-venue">Atlanta Braves Stadium</div>
             </div>
-            <button class="predictions-button" data-game-id="wsh-ari" onclick="togglePredictions(this)">Show Predictions</button>
-            <div class="predictions" id="predictions-wsh-ari">
+            <button class="predictions-button" data-game-id="ari-atl" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-ari-atl">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-header">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/tex_logo.svg" alt="Texas Rangers logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">TEX</div>
+                    <div class="team-record">29-31</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/tb_logo.svg" alt="Tampa Bay Rays logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">TB</div>
+                    <div class="team-record">30-29</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">Wed, Jun 4</div>
+                <div class="game-time">07:35 PM EDT</div>
+                <div class="game-venue">Tampa Bay Rays Stadium</div>
+            </div>
+            <button class="predictions-button" data-game-id="tex-tb" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-tex-tb">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-header">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/det_logo.svg" alt="Detroit Tigers logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">DET</div>
+                    <div class="team-record">40-21</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/cws_logo.svg" alt="Chicago White Sox logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">CWS</div>
+                    <div class="team-record">18-42</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">Wed, Jun 4</div>
+                <div class="game-time">07:40 PM EDT</div>
+                <div class="game-venue">Chicago White Sox Stadium</div>
+            </div>
+            <button class="predictions-button" data-game-id="det-cws" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-det-cws">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-header">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/kc_logo.svg" alt="Kansas City Royals logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">KC</div>
+                    <div class="team-record">31-29</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/stl_logo.svg" alt="St. Louis Cardinals logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">STL</div>
+                    <div class="team-record">33-26</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">Wed, Jun 4</div>
+                <div class="game-time">07:45 PM EDT</div>
+                <div class="game-venue">St. Louis Cardinals Stadium</div>
+            </div>
+            <button class="predictions-button" data-game-id="kc-stl" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-kc-stl">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-header">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/bal_logo.svg" alt="Baltimore Orioles logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">BAL</div>
+                    <div class="team-record">22-36</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/sea_logo.svg" alt="Seattle Mariners logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">SEA</div>
+                    <div class="team-record">32-26</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">Thu, Jun 5</div>
+                <div class="game-time">09:40 PM EDT</div>
+                <div class="game-venue">Seattle Mariners Stadium</div>
+            </div>
+            <button class="predictions-button" data-game-id="bal-sea" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-bal-sea">
+                <!-- Predictions will be loaded here -->
+            </div>
+        </div>
+        <div class="game-card">
+            <div class="game-header">
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/sd_logo.svg" alt="San Diego Padres logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">SD</div>
+                    <div class="team-record">34-24</div>
+                </div>
+                <div class="vs">vs</div>
+                <div class="team">
+                    <div class="team-logo">
+                        <img src="team-logos/sf_logo.svg" alt="San Francisco Giants logo" class="team-logo">
+                    </div>
+                    <div class="team-abbr">SF</div>
+                    <div class="team-record">33-27</div>
+                </div>
+            </div>
+            <div class="game-details">
+                <div class="game-time">Thu, Jun 5</div>
+                <div class="game-time">09:45 PM EDT</div>
+                <div class="game-venue">San Francisco Giants Stadium</div>
+            </div>
+            <button class="predictions-button" data-game-id="sd-sf" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-sd-sf">
                 <!-- Predictions will be loaded here -->
             </div>
         </div>
@@ -397,24 +733,24 @@
                         <img src="team-logos/min_logo.svg" alt="Minnesota Twins logo" class="team-logo">
                     </div>
                     <div class="team-abbr">MIN</div>
-                    <div class="team-record">31-26</div>
+                    <div class="team-record">32-27</div>
                 </div>
                 <div class="vs">vs</div>
                 <div class="team">
                     <div class="team-logo">
-                        <img src="team-logos/sea_logo.svg" alt="Seattle Mariners logo" class="team-logo">
+                        <img src="team-logos/oak_logo.svg" alt="Oakland Athletics logo" class="team-logo">
                     </div>
-                    <div class="team-abbr">SEA</div>
-                    <div class="team-record">31-26</div>
+                    <div class="team-abbr">OAK</div>
+                    <div class="team-record">23-38</div>
                 </div>
             </div>
             <div class="game-details">
-                <div class="game-time">Sun, Jun 1</div>
-                <div class="game-time">12:10 AM EDT</div>
-                <div class="game-venue">T-Mobile Park, Seattle, WA</div>
+                <div class="game-time">Thu, Jun 5</div>
+                <div class="game-time">10:05 PM EDT</div>
+                <div class="game-venue">Oakland Athletics Stadium</div>
             </div>
-            <button class="predictions-button" data-game-id="min-sea" onclick="togglePredictions(this)">Show Predictions</button>
-            <div class="predictions" id="predictions-min-sea">
+            <button class="predictions-button" data-game-id="min-oak" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-min-oak">
                 <!-- Predictions will be loaded here -->
             </div>
         </div>
@@ -422,38 +758,10 @@
             <div class="game-header">
                 <div class="team">
                     <div class="team-logo">
-                        <img src="team-logos/pit_logo.svg" alt="Pittsburgh Pirates logo" class="team-logo">
+                        <img src="team-logos/nym_logo.svg" alt="New York Mets logo" class="team-logo">
                     </div>
-                    <div class="team-abbr">PIT</div>
-                    <div class="team-record">22-37</div>
-                </div>
-                <div class="vs">vs</div>
-                <div class="team">
-                    <div class="team-logo">
-                        <img src="team-logos/sd_logo.svg" alt="San Diego Padres logo" class="team-logo">
-                    </div>
-                    <div class="team-abbr">SD</div>
-                    <div class="team-record">32-24</div>
-                </div>
-            </div>
-            <div class="game-details">
-                <div class="game-time">Sun, Jun 1</div>
-                <div class="game-time">01:10 AM EDT</div>
-                <div class="game-venue">Petco Park, San Diego, CA</div>
-            </div>
-            <button class="predictions-button" data-game-id="pit-sd" onclick="togglePredictions(this)">Show Predictions</button>
-            <div class="predictions" id="predictions-pit-sd">
-                <!-- Predictions will be loaded here -->
-            </div>
-        </div>
-        <div class="game-card">
-            <div class="game-header">
-                <div class="team">
-                    <div class="team-logo">
-                        <img src="team-logos/nyy_logo.svg" alt="New York Yankees logo" class="team-logo">
-                    </div>
-                    <div class="team-abbr">NYY</div>
-                    <div class="team-record">35-22</div>
+                    <div class="team-abbr">NYM</div>
+                    <div class="team-record">38-22</div>
                 </div>
                 <div class="vs">vs</div>
                 <div class="team">
@@ -461,16 +769,16 @@
                         <img src="team-logos/lad_logo.svg" alt="Los Angeles Dodgers logo" class="team-logo">
                     </div>
                     <div class="team-abbr">LAD</div>
-                    <div class="team-record">36-22</div>
+                    <div class="team-record">36-24</div>
                 </div>
             </div>
             <div class="game-details">
-                <div class="game-time">Sun, Jun 1</div>
-                <div class="game-time">03:10 AM EDT</div>
-                <div class="game-venue">Dodger Stadium, Los Angeles, CA</div>
+                <div class="game-time">Thu, Jun 5</div>
+                <div class="game-time">10:10 PM EDT</div>
+                <div class="game-venue">Los Angeles Dodgers Stadium</div>
             </div>
-            <button class="predictions-button" data-game-id="nyy-lad" onclick="togglePredictions(this)">Show Predictions</button>
-            <div class="predictions" id="predictions-nyy-lad">
+            <button class="predictions-button" data-game-id="nym-lad" onclick="togglePredictions(this)">Show Predictions</button>
+            <div class="predictions" id="predictions-nym-lad">
                 <!-- Predictions will be loaded here -->
             </div>
         </div></div>
@@ -533,140 +841,503 @@
         
         // Game data
         const GAMES = {
-    "wsh-ari": {
+    "col-mia": {
         "away": {
-            "team": "Washington Nationals",
-            "abbr": "WSH",
-            "record": "28-30"
+            "team": "Colorado Rockies",
+            "abbr": "COL",
+            "record": "10-50"
         },
         "home": {
+            "team": "Miami Marlins",
+            "abbr": "MIA",
+            "record": "23-35"
+        },
+        "time": "12:10 PM EDT",
+        "date": "Wed, Jun 4",
+        "venue": "Miami Marlins Stadium"
+    },
+    "mil-cin": {
+        "away": {
+            "team": "Milwaukee Brewers",
+            "abbr": "MIL",
+            "record": "33-28"
+        },
+        "home": {
+            "team": "Cincinnati Reds",
+            "abbr": "CIN",
+            "record": "29-32"
+        },
+        "time": "12:40 PM EDT",
+        "date": "Wed, Jun 4",
+        "venue": "Cincinnati Reds Stadium"
+    },
+    "laa-bos": {
+        "away": {
+            "team": "Los Angeles Angels",
+            "abbr": "LAA",
+            "record": "27-32"
+        },
+        "home": {
+            "team": "Boston Red Sox",
+            "abbr": "BOS",
+            "record": "29-33"
+        },
+        "time": "01:35 PM EDT",
+        "date": "Wed, Jun 4",
+        "venue": "Boston Red Sox Stadium"
+    },
+    "hou-pit": {
+        "away": {
+            "team": "Houston Astros",
+            "abbr": "HOU",
+            "record": "32-27"
+        },
+        "home": {
+            "team": "Pittsburgh Pirates",
+            "abbr": "PIT",
+            "record": "22-38"
+        },
+        "time": "06:40 PM EDT",
+        "date": "Wed, Jun 4",
+        "venue": "Pittsburgh Pirates Stadium"
+    },
+    "chc-wsh": {
+        "away": {
+            "team": "Chicago Cubs",
+            "abbr": "CHC",
+            "record": "37-22"
+        },
+        "home": {
+            "team": "Washington Nationals",
+            "abbr": "WSH",
+            "record": "28-31"
+        },
+        "time": "06:45 PM EDT",
+        "date": "Wed, Jun 4",
+        "venue": "Washington Nationals Stadium"
+    },
+    "cle-nyy": {
+        "away": {
+            "team": "Cleveland Guardians",
+            "abbr": "CLE",
+            "record": "32-26"
+        },
+        "home": {
+            "team": "New York Yankees",
+            "abbr": "NYY",
+            "record": "36-22"
+        },
+        "time": "07:05 PM EDT",
+        "date": "Wed, Jun 4",
+        "venue": "New York Yankees Stadium"
+    },
+    "phi-tor": {
+        "away": {
+            "team": "Philadelphia Phillies",
+            "abbr": "PHI",
+            "record": "36-23"
+        },
+        "home": {
+            "team": "Toronto Blue Jays",
+            "abbr": "TOR",
+            "record": "31-28"
+        },
+        "time": "07:07 PM EDT",
+        "date": "Wed, Jun 4",
+        "venue": "Toronto Blue Jays Stadium"
+    },
+    "ari-atl": {
+        "away": {
             "team": "Arizona Diamondbacks",
             "abbr": "ARI",
+            "record": "28-31"
+        },
+        "home": {
+            "team": "Atlanta Braves",
+            "abbr": "ATL",
             "record": "27-31"
         },
-        "time": "12:10 AM EDT",
-        "date": "Sun, Jun 1",
-        "venue": "Chase Field, Phoenix, AZ"
+        "time": "07:15 PM EDT",
+        "date": "Wed, Jun 4",
+        "venue": "Atlanta Braves Stadium"
     },
-    "min-sea": {
+    "tex-tb": {
         "away": {
-            "team": "Minnesota Twins",
-            "abbr": "MIN",
-            "record": "31-26"
+            "team": "Texas Rangers",
+            "abbr": "TEX",
+            "record": "29-31"
+        },
+        "home": {
+            "team": "Tampa Bay Rays",
+            "abbr": "TB",
+            "record": "30-29"
+        },
+        "time": "07:35 PM EDT",
+        "date": "Wed, Jun 4",
+        "venue": "Tampa Bay Rays Stadium"
+    },
+    "det-cws": {
+        "away": {
+            "team": "Detroit Tigers",
+            "abbr": "DET",
+            "record": "40-21"
+        },
+        "home": {
+            "team": "Chicago White Sox",
+            "abbr": "CWS",
+            "record": "18-42"
+        },
+        "time": "07:40 PM EDT",
+        "date": "Wed, Jun 4",
+        "venue": "Chicago White Sox Stadium"
+    },
+    "kc-stl": {
+        "away": {
+            "team": "Kansas City Royals",
+            "abbr": "KC",
+            "record": "31-29"
+        },
+        "home": {
+            "team": "St. Louis Cardinals",
+            "abbr": "STL",
+            "record": "33-26"
+        },
+        "time": "07:45 PM EDT",
+        "date": "Wed, Jun 4",
+        "venue": "St. Louis Cardinals Stadium"
+    },
+    "bal-sea": {
+        "away": {
+            "team": "Baltimore Orioles",
+            "abbr": "BAL",
+            "record": "22-36"
         },
         "home": {
             "team": "Seattle Mariners",
             "abbr": "SEA",
-            "record": "31-26"
+            "record": "32-26"
         },
-        "time": "12:10 AM EDT",
-        "date": "Sun, Jun 1",
-        "venue": "T-Mobile Park, Seattle, WA"
+        "time": "09:40 PM EDT",
+        "date": "Thu, Jun 5",
+        "venue": "Seattle Mariners Stadium"
     },
-    "pit-sd": {
+    "sd-sf": {
         "away": {
-            "team": "Pittsburgh Pirates",
-            "abbr": "PIT",
-            "record": "22-37"
-        },
-        "home": {
             "team": "San Diego Padres",
             "abbr": "SD",
-            "record": "32-24"
+            "record": "34-24"
         },
-        "time": "01:10 AM EDT",
-        "date": "Sun, Jun 1",
-        "venue": "Petco Park, San Diego, CA"
+        "home": {
+            "team": "San Francisco Giants",
+            "abbr": "SF",
+            "record": "33-27"
+        },
+        "time": "09:45 PM EDT",
+        "date": "Thu, Jun 5",
+        "venue": "San Francisco Giants Stadium"
     },
-    "nyy-lad": {
+    "min-oak": {
         "away": {
-            "team": "New York Yankees",
-            "abbr": "NYY",
-            "record": "35-22"
+            "team": "Minnesota Twins",
+            "abbr": "MIN",
+            "record": "32-27"
+        },
+        "home": {
+            "team": "Oakland Athletics",
+            "abbr": "OAK",
+            "record": "23-38"
+        },
+        "time": "10:05 PM EDT",
+        "date": "Thu, Jun 5",
+        "venue": "Oakland Athletics Stadium"
+    },
+    "nym-lad": {
+        "away": {
+            "team": "New York Mets",
+            "abbr": "NYM",
+            "record": "38-22"
         },
         "home": {
             "team": "Los Angeles Dodgers",
             "abbr": "LAD",
-            "record": "36-22"
+            "record": "36-24"
         },
-        "time": "03:10 AM EDT",
-        "date": "Sun, Jun 1",
-        "venue": "Dodger Stadium, Los Angeles, CA"
+        "time": "10:10 PM EDT",
+        "date": "Thu, Jun 5",
+        "venue": "Los Angeles Dodgers Stadium"
     }
 };
         
         // Fallback predictions in case API calls fail
         const FALLBACK_PREDICTIONS = {
-    "wsh-ari": [
+    "col-mia": [
         {
             "source": "OpenAI",
-            "text": "Washington Nationals - Arizona Diamondbacks: 1-5\n\nThe Arizona Diamondbacks have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Washington Nationals's scoring opportunities."
+            "text": "Colorado Rockies - Miami Marlins: 1-3\n\nThe Miami Marlins have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Colorado Rockies's scoring opportunities."
         },
         {
             "source": "Anthropic",
-            "text": "Washington Nationals - Arizona Diamondbacks: 2-4\n\nAfter analyzing both teams' strengths and weaknesses, the Arizona Diamondbacks appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Washington Nationals in this game."
+            "text": "Colorado Rockies - Miami Marlins: 2-4\n\nAfter analyzing both teams' strengths and weaknesses, the Miami Marlins appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Colorado Rockies in this game."
         },
         {
             "source": "Grok",
-            "text": "Washington Nationals - Arizona Diamondbacks: 3-4\n\nLooking at the batting averages and bullpen ERA, the Arizona Diamondbacks have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Chase Field, Phoenix, AZ."
+            "text": "Colorado Rockies - Miami Marlins: 2-4\n\nLooking at the batting averages and bullpen ERA, the Miami Marlins have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Miami Marlins Stadium."
         },
         {
             "source": "DeepSeek",
-            "text": "Washington Nationals - Arizona Diamondbacks: 1-3\n\nStatistical analysis indicates the Arizona Diamondbacks have a 52% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+            "text": "Colorado Rockies - Miami Marlins: 1-6\n\nStatistical analysis indicates the Miami Marlins have a 73% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
         }
     ],
-    "min-sea": [
+    "mil-cin": [
         {
             "source": "OpenAI",
-            "text": "Minnesota Twins - Seattle Mariners: 1-5\n\nThe Seattle Mariners have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Minnesota Twins's scoring opportunities."
+            "text": "Milwaukee Brewers - Cincinnati Reds: 6-3\n\nDespite playing away, the Milwaukee Brewers have shown better form with their 33-28 record compared to the Cincinnati Reds's 29-32. The Milwaukee Brewers's batting lineup has been more productive in recent games."
         },
         {
             "source": "Anthropic",
-            "text": "Minnesota Twins - Seattle Mariners: 3-3\n\nAfter analyzing both teams' strengths and weaknesses, the Seattle Mariners appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Minnesota Twins in this game."
+            "text": "Milwaukee Brewers - Cincinnati Reds: 3-3\n\nThe Milwaukee Brewers have been performing exceptionally well on the road this season, which gives them an edge despite playing away. Their bullpen has been more reliable than the Cincinnati Reds's relief pitchers in close game situations."
         },
         {
             "source": "Grok",
-            "text": "Minnesota Twins - Seattle Mariners: 1-5\n\nLooking at the batting averages and bullpen ERA, the Seattle Mariners have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at T-Mobile Park, Seattle, WA."
+            "text": "Milwaukee Brewers - Cincinnati Reds: 5-2\n\nThe Milwaukee Brewers have been road warriors this season with impressive away statistics. Their offensive production has been significantly better than the Cincinnati Reds's in the last 10 games."
         },
         {
             "source": "DeepSeek",
-            "text": "Minnesota Twins - Seattle Mariners: 1-4\n\nStatistical analysis indicates the Seattle Mariners have a 52% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+            "text": "Milwaukee Brewers - Cincinnati Reds: 6-2\n\nBased on advanced metrics, the Milwaukee Brewers have a 51% chance to win despite playing away from home. Their road OPS and pitching matchup advantages are significant factors in this prediction."
         }
     ],
-    "pit-sd": [
+    "laa-bos": [
         {
             "source": "OpenAI",
-            "text": "Pittsburgh Pirates - San Diego Padres: 1-6\n\nThe San Diego Padres have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Pittsburgh Pirates's scoring opportunities."
+            "text": "Los Angeles Angels - Boston Red Sox: 3-4\n\nThe Boston Red Sox have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Los Angeles Angels's scoring opportunities."
         },
         {
             "source": "Anthropic",
-            "text": "Pittsburgh Pirates - San Diego Padres: 2-5\n\nAfter analyzing both teams' strengths and weaknesses, the San Diego Padres appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Pittsburgh Pirates in this game."
+            "text": "Los Angeles Angels - Boston Red Sox: 3-6\n\nAfter analyzing both teams' strengths and weaknesses, the Boston Red Sox appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Los Angeles Angels in this game."
         },
         {
             "source": "Grok",
-            "text": "Pittsburgh Pirates - San Diego Padres: 2-3\n\nLooking at the batting averages and bullpen ERA, the San Diego Padres have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Petco Park, San Diego, CA."
+            "text": "Los Angeles Angels - Boston Red Sox: 1-3\n\nLooking at the batting averages and bullpen ERA, the Boston Red Sox have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Boston Red Sox Stadium."
         },
         {
             "source": "DeepSeek",
-            "text": "Pittsburgh Pirates - San Diego Padres: 3-6\n\nStatistical analysis indicates the San Diego Padres have a 62% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+            "text": "Los Angeles Angels - Boston Red Sox: 1-3\n\nStatistical analysis indicates the Boston Red Sox have a 53% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
         }
     ],
-    "nyy-lad": [
+    "hou-pit": [
         {
             "source": "OpenAI",
-            "text": "New York Yankees - Los Angeles Dodgers: 2-3\n\nThe Los Angeles Dodgers have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the New York Yankees's scoring opportunities."
+            "text": "Houston Astros - Pittsburgh Pirates: 6-2\n\nDespite playing away, the Houston Astros have shown better form with their 32-27 record compared to the Pittsburgh Pirates's 22-38. The Houston Astros's batting lineup has been more productive in recent games."
         },
         {
             "source": "Anthropic",
-            "text": "New York Yankees - Los Angeles Dodgers: 1-4\n\nAfter analyzing both teams' strengths and weaknesses, the Los Angeles Dodgers appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the New York Yankees in this game."
+            "text": "Houston Astros - Pittsburgh Pirates: 3-3\n\nThe Houston Astros have been performing exceptionally well on the road this season, which gives them an edge despite playing away. Their bullpen has been more reliable than the Pittsburgh Pirates's relief pitchers in close game situations."
         },
         {
             "source": "Grok",
-            "text": "New York Yankees - Los Angeles Dodgers: 3-3\n\nLooking at the batting averages and bullpen ERA, the Los Angeles Dodgers have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Dodger Stadium, Los Angeles, CA."
+            "text": "Houston Astros - Pittsburgh Pirates: 5-1\n\nThe Houston Astros have been road warriors this season with impressive away statistics. Their offensive production has been significantly better than the Pittsburgh Pirates's in the last 10 games."
         },
         {
             "source": "DeepSeek",
-            "text": "New York Yankees - Los Angeles Dodgers: 2-3\n\nStatistical analysis indicates the Los Angeles Dodgers have a 52% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+            "text": "Houston Astros - Pittsburgh Pirates: 6-2\n\nBased on advanced metrics, the Houston Astros have a 57% chance to win despite playing away from home. Their road OPS and pitching matchup advantages are significant factors in this prediction."
+        }
+    ],
+    "chc-wsh": [
+        {
+            "source": "OpenAI",
+            "text": "Chicago Cubs - Washington Nationals: 6-2\n\nDespite playing away, the Chicago Cubs have shown better form with their 37-22 record compared to the Washington Nationals's 28-31. The Chicago Cubs's batting lineup has been more productive in recent games."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Chicago Cubs - Washington Nationals: 3-2\n\nThe Chicago Cubs have been performing exceptionally well on the road this season, which gives them an edge despite playing away. Their bullpen has been more reliable than the Washington Nationals's relief pitchers in close game situations."
+        },
+        {
+            "source": "Grok",
+            "text": "Chicago Cubs - Washington Nationals: 4-2\n\nThe Chicago Cubs have been road warriors this season with impressive away statistics. Their offensive production has been significantly better than the Washington Nationals's in the last 10 games."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Chicago Cubs - Washington Nationals: 6-3\n\nBased on advanced metrics, the Chicago Cubs have a 54% chance to win despite playing away from home. Their road OPS and pitching matchup advantages are significant factors in this prediction."
+        }
+    ],
+    "cle-nyy": [
+        {
+            "source": "OpenAI",
+            "text": "Cleveland Guardians - New York Yankees: 2-3\n\nThe New York Yankees have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Cleveland Guardians's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Cleveland Guardians - New York Yankees: 2-4\n\nAfter analyzing both teams' strengths and weaknesses, the New York Yankees appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Cleveland Guardians in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "Cleveland Guardians - New York Yankees: 1-4\n\nLooking at the batting averages and bullpen ERA, the New York Yankees have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at New York Yankees Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Cleveland Guardians - New York Yankees: 3-3\n\nStatistical analysis indicates the New York Yankees have a 55% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+        }
+    ],
+    "phi-tor": [
+        {
+            "source": "OpenAI",
+            "text": "Philadelphia Phillies - Toronto Blue Jays: 6-2\n\nDespite playing away, the Philadelphia Phillies have shown better form with their 36-23 record compared to the Toronto Blue Jays's 31-28. The Philadelphia Phillies's batting lineup has been more productive in recent games."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Philadelphia Phillies - Toronto Blue Jays: 3-3\n\nThe Philadelphia Phillies have been performing exceptionally well on the road this season, which gives them an edge despite playing away. Their bullpen has been more reliable than the Toronto Blue Jays's relief pitchers in close game situations."
+        },
+        {
+            "source": "Grok",
+            "text": "Philadelphia Phillies - Toronto Blue Jays: 6-2\n\nThe Philadelphia Phillies have been road warriors this season with impressive away statistics. Their offensive production has been significantly better than the Toronto Blue Jays's in the last 10 games."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Philadelphia Phillies - Toronto Blue Jays: 3-1\n\nBased on advanced metrics, the Philadelphia Phillies have a 51% chance to win despite playing away from home. Their road OPS and pitching matchup advantages are significant factors in this prediction."
+        }
+    ],
+    "ari-atl": [
+        {
+            "source": "OpenAI",
+            "text": "Arizona Diamondbacks - Atlanta Braves: 1-3\n\nThe Atlanta Braves have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Arizona Diamondbacks's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Arizona Diamondbacks - Atlanta Braves: 1-4\n\nAfter analyzing both teams' strengths and weaknesses, the Atlanta Braves appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Arizona Diamondbacks in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "Arizona Diamondbacks - Atlanta Braves: 2-4\n\nLooking at the batting averages and bullpen ERA, the Atlanta Braves have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Atlanta Braves Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Arizona Diamondbacks - Atlanta Braves: 3-3\n\nStatistical analysis indicates the Atlanta Braves have a 52% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+        }
+    ],
+    "tex-tb": [
+        {
+            "source": "OpenAI",
+            "text": "Texas Rangers - Tampa Bay Rays: 3-5\n\nThe Tampa Bay Rays have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Texas Rangers's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Texas Rangers - Tampa Bay Rays: 3-3\n\nAfter analyzing both teams' strengths and weaknesses, the Tampa Bay Rays appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Texas Rangers in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "Texas Rangers - Tampa Bay Rays: 1-5\n\nLooking at the batting averages and bullpen ERA, the Tampa Bay Rays have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Tampa Bay Rays Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Texas Rangers - Tampa Bay Rays: 3-6\n\nStatistical analysis indicates the Tampa Bay Rays have a 54% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+        }
+    ],
+    "det-cws": [
+        {
+            "source": "OpenAI",
+            "text": "Detroit Tigers - Chicago White Sox: 5-1\n\nDespite playing away, the Detroit Tigers have shown better form with their 40-21 record compared to the Chicago White Sox's 18-42. The Detroit Tigers's batting lineup has been more productive in recent games."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Detroit Tigers - Chicago White Sox: 3-1\n\nThe Detroit Tigers have been performing exceptionally well on the road this season, which gives them an edge despite playing away. Their bullpen has been more reliable than the Chicago White Sox's relief pitchers in close game situations."
+        },
+        {
+            "source": "Grok",
+            "text": "Detroit Tigers - Chicago White Sox: 3-1\n\nThe Detroit Tigers have been road warriors this season with impressive away statistics. Their offensive production has been significantly better than the Chicago White Sox's in the last 10 games."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Detroit Tigers - Chicago White Sox: 4-2\n\nBased on advanced metrics, the Detroit Tigers have a 65% chance to win despite playing away from home. Their road OPS and pitching matchup advantages are significant factors in this prediction."
+        }
+    ],
+    "kc-stl": [
+        {
+            "source": "OpenAI",
+            "text": "Kansas City Royals - St. Louis Cardinals: 2-6\n\nThe St. Louis Cardinals have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Kansas City Royals's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Kansas City Royals - St. Louis Cardinals: 1-5\n\nAfter analyzing both teams' strengths and weaknesses, the St. Louis Cardinals appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Kansas City Royals in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "Kansas City Royals - St. Louis Cardinals: 1-5\n\nLooking at the batting averages and bullpen ERA, the St. Louis Cardinals have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at St. Louis Cardinals Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Kansas City Royals - St. Louis Cardinals: 3-5\n\nStatistical analysis indicates the St. Louis Cardinals have a 54% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+        }
+    ],
+    "bal-sea": [
+        {
+            "source": "OpenAI",
+            "text": "Baltimore Orioles - Seattle Mariners: 3-6\n\nThe Seattle Mariners have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the Baltimore Orioles's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Baltimore Orioles - Seattle Mariners: 1-6\n\nAfter analyzing both teams' strengths and weaknesses, the Seattle Mariners appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the Baltimore Orioles in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "Baltimore Orioles - Seattle Mariners: 3-6\n\nLooking at the batting averages and bullpen ERA, the Seattle Mariners have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Seattle Mariners Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Baltimore Orioles - Seattle Mariners: 2-4\n\nStatistical analysis indicates the Seattle Mariners have a 61% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+        }
+    ],
+    "sd-sf": [
+        {
+            "source": "OpenAI",
+            "text": "San Diego Padres - San Francisco Giants: 3-4\n\nThe San Francisco Giants have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the San Diego Padres's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "San Diego Padres - San Francisco Giants: 3-3\n\nAfter analyzing both teams' strengths and weaknesses, the San Francisco Giants appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the San Diego Padres in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "San Diego Padres - San Francisco Giants: 3-4\n\nLooking at the batting averages and bullpen ERA, the San Francisco Giants have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at San Francisco Giants Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "San Diego Padres - San Francisco Giants: 2-3\n\nStatistical analysis indicates the San Francisco Giants have a 51% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
+        }
+    ],
+    "min-oak": [
+        {
+            "source": "OpenAI",
+            "text": "Minnesota Twins - Oakland Athletics: 4-1\n\nDespite playing away, the Minnesota Twins have shown better form with their 32-27 record compared to the Oakland Athletics's 23-38. The Minnesota Twins's batting lineup has been more productive in recent games."
+        },
+        {
+            "source": "Anthropic",
+            "text": "Minnesota Twins - Oakland Athletics: 4-1\n\nThe Minnesota Twins have been performing exceptionally well on the road this season, which gives them an edge despite playing away. Their bullpen has been more reliable than the Oakland Athletics's relief pitchers in close game situations."
+        },
+        {
+            "source": "Grok",
+            "text": "Minnesota Twins - Oakland Athletics: 5-2\n\nThe Minnesota Twins have been road warriors this season with impressive away statistics. Their offensive production has been significantly better than the Oakland Athletics's in the last 10 games."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "Minnesota Twins - Oakland Athletics: 6-2\n\nBased on advanced metrics, the Minnesota Twins have a 56% chance to win despite playing away from home. Their road OPS and pitching matchup advantages are significant factors in this prediction."
+        }
+    ],
+    "nym-lad": [
+        {
+            "source": "OpenAI",
+            "text": "New York Mets - Los Angeles Dodgers: 3-6\n\nThe Los Angeles Dodgers have a stronger record and home field advantage gives them the edge in this matchup. Their pitching staff has been more consistent recently which should limit the New York Mets's scoring opportunities."
+        },
+        {
+            "source": "Anthropic",
+            "text": "New York Mets - Los Angeles Dodgers: 3-5\n\nAfter analyzing both teams' strengths and weaknesses, the Los Angeles Dodgers appear to have the advantage playing at home. Their recent performance and pitching rotation matchup favorably against the New York Mets in this game."
+        },
+        {
+            "source": "Grok",
+            "text": "New York Mets - Los Angeles Dodgers: 2-3\n\nLooking at the batting averages and bullpen ERA, the Los Angeles Dodgers have clear advantages in key statistical categories. Their home record this season suggests they'll continue their strong performance at Los Angeles Dodgers Stadium."
+        },
+        {
+            "source": "DeepSeek",
+            "text": "New York Mets - Los Angeles Dodgers: 3-3\n\nStatistical analysis indicates the Los Angeles Dodgers have a 51% win probability in this matchup. Key factors include their home/away splits and superior performance in one-run games this season."
         }
     ]
 };

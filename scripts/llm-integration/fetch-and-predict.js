@@ -12,6 +12,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 const LLMPredictionService = require('./llm-prediction-service');
 const MongoDBService = require('./mongodb-service');
 require('dotenv').config();
@@ -126,9 +127,21 @@ async function scrapeMLBData() {
   console.log('Fetching MLB data from Dratings.com...');
   
   try {
-    // Fetch the HTML content
-    const response = await axios.get(DATA_SOURCE_URL);
-    const html = response.data;
+    // Fetch the HTML content using curl through the environment proxy
+    let html;
+    try {
+      html = execSync(`curl -Ls ${DATA_SOURCE_URL}`, { encoding: 'utf8' });
+    } catch (curlErr) {
+      console.warn('curl fetch failed, falling back to axios:', curlErr.message);
+      const response = await axios.get(DATA_SOURCE_URL, {
+        maxRedirects: 10,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Node.js)',
+          'Accept-Language': 'en-US,en;q=0.9'
+        }
+      });
+      html = response.data;
+    }
     
     // Save HTML for debugging
     saveHtmlForDebugging(html);
@@ -161,25 +174,36 @@ async function scrapeMLBData() {
           console.log(`  Time: ${timeText}`);
           console.log(`  Teams: ${teamsText}`);
           
-          // Parse date and time (format: "06/01/202508:10 PM")
-          // Allow optional space between the date and time
-          const dateMatch = timeText.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{2}):(\d{2})\s*([AP]M)/i);
-          let gameTime = '';
-          
-          if (dateMatch) {
-            const month = dateMatch[1];
-            const day = dateMatch[2];
-            const year = dateMatch[3];
-            const hour = dateMatch[4];
-            const minute = dateMatch[5];
-            const ampm = dateMatch[6];
+          // Parse date and time (format: "06/01/2025 08:10 PM" or "06/01/2025 08:10 PM ET")
+          // Remove commas and known timezone abbreviations before parsing
+          const cleanTimeText = timeText
+            .replace(/,/g, '')
+            .replace(/\b(ET|EST|EDT|CT|CDT|CST|MT|MDT|MST|PT|PDT|PST)\b/ig, '')
+            .trim();
 
-            // Convert to ISO string in Eastern Time so Date parsing works
-            const parsedDate = new Date(`${month}/${day}/${year} ${hour}:${minute} ${ampm} ET`);
+          // Allow optional space between the date and time
+          const dateMatch = cleanTimeText.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{1,2}):(\d{2})\s*([AP]M)/i);
+          let gameTime = '';
+
+          if (dateMatch) {
+            const month = parseInt(dateMatch[1], 10);
+            const day = parseInt(dateMatch[2], 10);
+            const year = parseInt(dateMatch[3], 10);
+            let hour = parseInt(dateMatch[4], 10);
+            const minute = parseInt(dateMatch[5], 10);
+            const ampm = dateMatch[6].toUpperCase();
+
+            // Convert to 24 hour time
+            if (ampm === 'PM' && hour !== 12) hour += 12;
+            if (ampm === 'AM' && hour === 12) hour = 0;
+
+            // Construct ISO time in UTC for consistency
+            const parsedDate = new Date(Date.UTC(year, month - 1, day, hour, minute));
             gameTime = parsedDate.toISOString();
             console.log(`  Parsed time: ${gameTime}`);
           } else {
-            gameTime = '2025-06-01T12:00:00';
+            console.warn(`  Failed to parse time: "${timeText}", defaulting to noon`);
+            gameTime = '2025-06-01T12:00:00Z';
           }
           
           // Parse teams (format: "Washington Nationals (28-30)Arizona Diamondbacks (27-31)")
