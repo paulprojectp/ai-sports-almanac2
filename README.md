@@ -36,6 +36,13 @@ npm start
 ```
 The `update` command fetches games, queries the LLMs and writes predictions to MongoDB.
 `npm start` launches a local Express server on port 3000. Visit http://localhost:3000 to view the results.
+
+To generate the static files for GitHub Pages, run:
+
+```bash
+npm run build
+```
+The `build` script outputs the site to the `out/` directory.
 ## Automation
 The workflow defined in `.github/workflows/update-predictions.yml` populates the
 environment from GitHub secrets and runs the update script every six hours so the database stays current.
