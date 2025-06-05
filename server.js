@@ -18,7 +18,13 @@ app.use(express.static(path.join(__dirname)));
 app.get('/api/games', async (req, res) => {
   try {
     const today = new Date();
-    const games = await mongo.getPredictionsByDate(today);
+    let games = await mongo.getPredictionsByDate(today);
+
+    // Fallback to most recently updated games if none match today's date
+    if (!games.length) {
+      games = await mongo.getLatestPredictions();
+    }
+
     const result = games.map(g => ({
       gameTime: g.gameDate,
       homeTeam: g.homeTeam,
@@ -26,6 +32,7 @@ app.get('/api/games', async (req, res) => {
       venue: g.venue,
       predictions: Object.entries(g.predictions).map(([source, text]) => ({ source, text }))
     }));
+
     res.json(result);
   } catch (err) {
     console.error('Error fetching predictions:', err);
