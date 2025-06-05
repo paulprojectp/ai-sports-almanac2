@@ -368,6 +368,7 @@ async function loadGames(){
     const res = await fetch('/api/games');
     const data = await res.json();
     renderGames(data);
+    updateLocalTimes(document.getElementById('games'));
   } catch(e){
     console.error('Failed to load live games:', e);
     const err=document.createElement('p');
@@ -376,6 +377,20 @@ async function loadGames(){
     err.textContent='Failed to load live games.';
     document.body.insertBefore(err, document.getElementById('games'));
   }
+}
+function updateLocalTimes(root=document){
+  root.querySelectorAll('.game-details').forEach(d=>{
+    const times=d.querySelectorAll('.game-time');
+    if(times.length<2)return;
+    const [dateEl,timeEl]=times;
+    let iso=timeEl.dataset.utc;
+    if(!iso){
+      const year=new Date().getFullYear();
+      iso=new Date(`${dateEl.textContent} ${year} ${timeEl.textContent}`).toISOString();
+      timeEl.dataset.utc=iso;
+    }
+    timeEl.textContent=new Date(iso).toLocaleString(undefined,{hour:'numeric',minute:'2-digit',hour12:true,timeZoneName:'short'});
+  });
 }
 function renderGames(games){
   const container=document.getElementById('games');
@@ -388,10 +403,14 @@ function renderGames(games){
       <div>vs</div>
       <div class="team"><div class="team-logo"><img src="${g.homeTeam.logo}" alt="${g.homeTeam.abbreviation}"></div><div>${g.homeTeam.abbreviation}</div></div>
     </div>
-    <div class="game-details" style="text-align:center;padding-bottom:0.5rem;font-size:0.9rem;">${new Date(g.gameTime).toLocaleString(undefined,{hour:'numeric',minute:'2-digit',hour12:true,timeZoneName:'short'})} - ${g.venue}</div>
+    <div class="game-details" style="text-align:center;padding-bottom:0.5rem;font-size:0.9rem;">
+      <div class="game-time" data-utc="${g.gameTime}"></div>
+      <div class="game-venue">${g.venue}</div>
+    </div>
     <button onclick="togglePredictions(this)" data-game-id="${g.gameId}">Show Predictions</button>
     <div class="predictions"><ul>${g.predictions.map(p=>`<li><strong>${p.source}:</strong> ${p.text}</li>`).join('')}</ul></div>`;
     container.appendChild(card);
+    updateLocalTimes(card);
   });
 }
 async function togglePredictions(btn){
@@ -409,8 +428,9 @@ async function togglePredictions(btn){
     }
   }
   p.classList.toggle('active');
-  btn.textContent = p.classList.contains('active') ? 'Hide Predictions' : 'Show Predictions';
+btn.textContent = p.classList.contains('active') ? 'Hide Predictions' : 'Show Predictions';
 }
+updateLocalTimes();
 loadGames();
 </script>
 

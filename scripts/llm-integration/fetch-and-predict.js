@@ -343,7 +343,8 @@ async function updateHtmlWithPredictions(games) {
         home: { team: homeTeam.name, abbr: homeTeam.abbreviation, record: homeTeam.record },
         time: timeStr,
         date: dateStr,
-        venue
+        venue,
+        iso: gameTime
       };
 
       predictionsObj[id] = [
@@ -381,7 +382,7 @@ async function updateHtmlWithPredictions(games) {
             </div>
             <div class="game-details">
                 <div class="game-time">${game.date}</div>
-                <div class="game-time">${game.time}</div>
+                <div class="game-time" data-utc="${game.iso}">${game.time}</div>
                 <div class="game-venue">${game.venue}</div>
             </div>
             <button class="predictions-button" data-game-id="${id}" onclick="togglePredictions(this)">Show Predictions</button>
