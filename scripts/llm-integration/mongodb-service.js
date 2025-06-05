@@ -84,10 +84,19 @@ class MongoDBService {
       
       let result;
       if (existingPrediction) {
-        // Update existing prediction
+        // Update existing prediction with latest game info and predictions
         result = await this.predictions.updateOne(
           { gameId: game.id },
-          { $set: { predictions: predictions, updatedAt: new Date() } }
+          {
+            $set: {
+              gameDate: new Date(game.gameTime),
+              homeTeam: game.homeTeam,
+              awayTeam: game.awayTeam,
+              venue: game.venue,
+              predictions: predictions,
+              updatedAt: new Date()
+            }
+          }
         );
         console.log(`Updated predictions for game ${game.id}`);
       } else {
