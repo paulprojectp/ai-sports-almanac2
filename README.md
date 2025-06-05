@@ -14,6 +14,7 @@ these variables:
 OPENAI_API_KEY=your_openai_key
 ANTHROPIC_API_KEY=your_anthropic_key
 GROK_API_KEY=your_grok_key
+GROK_MODEL=grok-3-mini-fast-latest
 DEEPSEEK_API_KEY=your_deepseek_key
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net
 MONGODB_DB_NAME=ai-sports-almanac

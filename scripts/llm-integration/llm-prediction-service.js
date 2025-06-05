@@ -16,6 +16,9 @@ class LLMPredictionService {
       grok: apiKeys.grok || process.env.GROK_API_KEY,
       deepseek: apiKeys.deepseek || process.env.DEEPSEEK_API_KEY,
     };
+
+    // Allow overriding the Grok model via environment variable
+    this.grokModel = process.env.GROK_MODEL || 'grok-3-mini-fast-latest';
   }
 
   /**
@@ -168,7 +171,8 @@ Keep your explanation concise and focus only on this specific game.`;
       const response = await this.requestWithRetry(() => axios.post(
         'https://api.x.ai/v1/chat/completions',
         {
-          model: 'grok-1',
+          model: this.grokModel,
+          reasoning_effort: 'low',
           messages: [
             { role: 'system', content: 'You are a sports prediction AI specializing in MLB baseball.' },
             { role: 'user', content: prompt }
