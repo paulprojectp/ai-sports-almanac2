@@ -17,8 +17,12 @@ app.use(express.static(path.join(__dirname)));
 
 app.get('/api/games', async (req, res) => {
   try {
-    const today = new Date();
-    let games = await mongo.getPredictionsByDate(today);
+    const now = new Date();
+    // Convert to Eastern Time so games remain visible for the entire ET day
+    const easternNow = new Date(now.toLocaleString('en-US', {
+      timeZone: 'America/New_York'
+    }));
+    let games = await mongo.getPredictionsByDate(easternNow);
 
     // Fallback to most recently updated games if none match today's date
     if (!games.length) {
@@ -26,17 +30,45 @@ app.get('/api/games', async (req, res) => {
     }
 
     const result = games.map(g => ({
+      gameId: g.gameId,
       gameTime: g.gameDate,
       homeTeam: g.homeTeam,
       awayTeam: g.awayTeam,
       venue: g.venue,
-      predictions: Object.entries(g.predictions).map(([source, text]) => ({ source, text }))
+      predictions: ['openai', 'anthropic', 'grok', 'deepseek']
+        .filter(k => g.predictions[k])
+        .map(k => ({ source: k, text: g.predictions[k] }))
     }));
 
     res.json(result);
   } catch (err) {
     console.error('Error fetching predictions:', err);
     res.status(500).json({ error: 'Failed to fetch predictions' });
+  }
+});
+
+// Fetch predictions for a single game by ID
+app.get('/api/games/:gameId', async (req, res) => {
+  try {
+    const gameId = req.params.gameId;
+    const g = await mongo.getPredictions(gameId);
+    if (!g) {
+      return res.status(404).json({ error: 'Game not found' });
+    }
+    const result = {
+      gameId: g.gameId,
+      gameTime: g.gameDate,
+      homeTeam: g.homeTeam,
+      awayTeam: g.awayTeam,
+      venue: g.venue,
+      predictions: ['openai', 'anthropic', 'grok', 'deepseek']
+        .filter(k => g.predictions[k])
+        .map(k => ({ source: k, text: g.predictions[k] }))
+    };
+    res.json(result);
+  } catch (err) {
+    console.error('Error fetching game prediction:', err);
+    res.status(500).json({ error: 'Failed to fetch prediction' });
   }
 });
 
