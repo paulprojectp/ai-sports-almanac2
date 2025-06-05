@@ -131,6 +131,39 @@ function parseEasternTimeToISO(month, day, year, hour, minute, ampm) {
   const d = new Date(dateStr);
   return d.toISOString();
 }
+// Fetch schedule data from MLB Stats API as a fallback when Dratings scraping fails
+async function fetchStatsApiSchedule(date = new Date()) {
+  const eastern = new Date(date.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  const dateStr = eastern.toISOString().split('T')[0];
+
+  const teamRes = await axios.get('https://statsapi.mlb.com/api/v1/teams?sportId=1');
+  const teamMap = {};
+  for (const t of teamRes.data.teams || []) {
+    teamMap[t.id] = { name: t.name, abbr: t.abbreviation || t.teamCode.toUpperCase() };
+  }
+
+  const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${dateStr}`;
+  const res = await axios.get(url);
+  const games = [];
+  const dateData = res.data.dates[0];
+  if (!dateData) return games;
+
+  for (const g of dateData.games) {
+    const homeInfo = teamMap[g.teams.home.team.id] || { name: g.teams.home.team.name, abbr: g.teams.home.team.name.slice(0,3).toUpperCase() };
+    const awayInfo = teamMap[g.teams.away.team.id] || { name: g.teams.away.team.name, abbr: g.teams.away.team.name.slice(0,3).toUpperCase() };
+    const homeRecord = g.teams.home.leagueRecord ? `${g.teams.home.leagueRecord.wins}-${g.teams.home.leagueRecord.losses}` : '';
+    const awayRecord = g.teams.away.leagueRecord ? `${g.teams.away.leagueRecord.wins}-${g.teams.away.leagueRecord.losses}` : '';
+    games.push({
+      id: `${awayInfo.abbr.toLowerCase()}-${homeInfo.abbr.toLowerCase()}`,
+      homeTeam: { name: homeInfo.name, abbreviation: homeInfo.abbr, logo: `/team-logos/${homeInfo.abbr.toLowerCase()}_logo.svg`, record: homeRecord },
+      awayTeam: { name: awayInfo.name, abbreviation: awayInfo.abbr, logo: `/team-logos/${awayInfo.abbr.toLowerCase()}_logo.svg`, record: awayRecord },
+      gameTime: g.gameDate,
+      venue: g.venue.name
+    });
+  }
+
+  return games;
+}
 
 // Save HTML for debugging
 function saveHtmlForDebugging(html) {
@@ -262,7 +295,7 @@ async function scrapeMLBData() {
     // If no games were scraped, return an empty array
     if (games.length === 0) {
       console.warn("No games found when scraping Dratings.");
-      return [];
+      return await fetchStatsApiSchedule();
     }
     
     console.log(`Found ${games.length} upcoming MLB games`);
@@ -271,8 +304,8 @@ async function scrapeMLBData() {
     console.error('Error scraping MLB data:', error);
     
     // Scraping failed so no games could be updated
-    console.warn("Failed to scrape Dratings; no games updated.");
-    return [];
+    console.warn("Failed to scrape Dratings; falling back to MLB Stats API.");
+      return await fetchStatsApiSchedule();
   }
 }
 
@@ -287,12 +320,12 @@ async function updateHtmlWithPredictions(games) {
     
     // Add a timestamp to force update
     const timestamp = new Date().toISOString();
-    const timestampPattern = /<!-- Last updated: .*? -->/;
-    if (timestampPattern.test(updatedHtml)) {
-      updatedHtml = updatedHtml.replace(timestampPattern, `<!-- Last updated: ${timestamp} -->`);
-    } else {
-      updatedHtml = updatedHtml.replace(/<head>/, `<head>\n  <!-- Last updated: ${timestamp} -->`);
-    }
+    // Remove any existing timestamp comments before inserting a new one
+    updatedHtml = updatedHtml.replace(/<!-- Last updated: .*? -->/g, '');
+    updatedHtml = updatedHtml.replace(
+      /<head>/,
+      `<head>\n  <!-- Last updated: ${timestamp} -->`
+    );
     
     // Build game data object for the page
     const gamesObj = {};
@@ -475,7 +508,11 @@ async function main() {
       // Create a timestamp to force update
       const timestamp = new Date().toISOString();
       const htmlContent = fs.readFileSync(STATIC_DATA_PATH, 'utf8');
-      const updatedHtml = htmlContent.replace(/<head>/, `<head>\n  <!-- Last updated: ${timestamp} -->`);
+      const cleaned = htmlContent.replace(/<!-- Last updated: .*? -->/g, '');
+      const updatedHtml = cleaned.replace(
+        /<head>/,
+        `<head>\n  <!-- Last updated: ${timestamp} -->`
+      );
       fs.writeFileSync(STATIC_DATA_PATH, updatedHtml);
       console.log('Added timestamp to HTML to force update');
     } catch (htmlError) {
