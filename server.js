@@ -13,7 +13,12 @@ init().catch(err => {
   console.error('Failed to connect to MongoDB:', err);
 });
 
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(__dirname));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 
 app.get('/api/games', async (req, res) => {
   try {
@@ -72,7 +77,9 @@ app.get('/api/games/:gameId', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+//const PORT = process.env.PORT || 3000;
+//app.listen(PORT, () => {
+//  console.log(`Server listening on port ${PORT}`);
+//});
+module.exports = app;
+
