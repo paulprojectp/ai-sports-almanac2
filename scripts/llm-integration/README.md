@@ -42,7 +42,7 @@ node scripts/llm-integration/fetch-and-predict.js
 ```
 
 This will:
-1. Fetch real MLB game data from Dratings.com
+1. Fetch real MLB game data from Dratings.com (falling back to the public MLB Stats API if scraping fails)
 2. Generate predictions using the configured LLM providers
 3. Store predictions in MongoDB (if connection is successful)
 4. Update the site's HTML with the new predictions
@@ -68,3 +68,11 @@ You can set up a cron job to run the script automatically on a schedule:
 ```
 
 This will update predictions every 6 hours.
+
+## Data sources
+
+The script first attempts to scrape game listings from [Dratings.com](https://www.dratings.com/predictor/mlb-baseball-predictions/).
+If scraping fails (for example due to a redirect loop) or yields no games, it
+falls back to the public [MLB Stats API](https://statsapi.mlb.com/) to retrieve
+the day's schedule. The Stats API is maintained by Major League Baseball and does
+not require authentication for basic schedule data.
