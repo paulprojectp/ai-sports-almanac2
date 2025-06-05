@@ -172,6 +172,33 @@ class MongoDBService {
   }
 
   /**
+   * Get the most recently updated predictions
+   * @param {number} limit - Max number of games to return
+   * @returns {Promise<Array>} - Array of game predictions
+   */
+  async getLatestPredictions(limit = 15) {
+    if (!this.predictions) {
+      const connected = await this.connect();
+      if (!connected) {
+        return [];
+      }
+    }
+
+    try {
+      const results = await this.predictions
+        .find()
+        .sort({ updatedAt: -1 })
+        .limit(limit)
+        .toArray();
+
+      return results;
+    } catch (error) {
+      console.error('Error getting latest predictions:', error);
+      return [];
+    }
+  }
+
+  /**
    * Delete predictions for a game
    * @param {String} gameId - Game ID
    * @returns {Promise<boolean>} - Success status
