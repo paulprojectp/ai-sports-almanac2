@@ -105,7 +105,7 @@ function renderGames(games){
       <div>vs</div>
       <div class="team"><div class="team-logo"><img src="${g.homeTeam.logo}" alt="${g.homeTeam.abbreviation}"></div><div>${g.homeTeam.abbreviation}</div></div>
     </div>
-    <div class="game-details" style="text-align:center;padding-bottom:0.5rem;font-size:0.9rem;">${new Date(g.gameTime).toLocaleString('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'2-digit',hour12:true,timeZoneName:'short'})} - ${g.venue}</div>
+    <div class="game-details" style="text-align:center;padding-bottom:0.5rem;font-size:0.9rem;">${new Date(g.gameTime).toLocaleString(undefined,{hour:'numeric',minute:'2-digit',hour12:true,timeZoneName:'short'})} - ${g.venue}</div>
     <button onclick="togglePredictions(this)" data-game-id="${g.gameId}">Show Predictions</button>
     <div class="predictions"><ul>${g.predictions.map(p=>`<li><strong>${p.source}:</strong> ${p.text}</li>`).join('')}</ul></div>`;
     container.appendChild(card);
